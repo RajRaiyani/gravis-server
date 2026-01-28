@@ -19,6 +19,10 @@ export const ValidationSchema = {
     tags: z.array(z.string()).max(20, 'Maximum 20 tags allowed').default([]),
     metadata: z.object({}).default({}),
     points: z.array(z.string().trim().max(70, 'Points must be less than 70 characters')).default([]),
+    technical_details: z.array(z.object({
+      label: z.string().trim().min(1, 'Label is required'),
+      value: z.string().trim().min(1, 'Value is required'),
+    })).default([]),
     sale_price: z
       .number()
       .int()
@@ -42,6 +46,7 @@ export async function Controller(
     sale_price,
     image_id,
     points,
+    technical_details,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   // Check if category exists
@@ -71,8 +76,8 @@ export async function Controller(
 
     // Create product
     const newProduct = await db.queryOne(
-      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price_in_paisa, points)
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price_in_paisa, points, technical_details)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
       [
         category_id,
         name,
@@ -81,6 +86,7 @@ export async function Controller(
         metadata || {},
         sale_price,
         points || [],
+        technical_details || [],
       ],
     );
 
@@ -107,4 +113,3 @@ export async function Controller(
     return next(error);
   }
 }
-
