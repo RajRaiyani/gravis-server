@@ -31,6 +31,7 @@ export async function Controller(
       p.created_at,
       p.updated_at,
       p.points,
+      p.technical_details,
       json_build_object(
         'id', pc.id,
         'name', pc.name,
