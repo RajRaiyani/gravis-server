@@ -7,14 +7,14 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_18_voosto_data:/var/lib/postgresql
+      - postgres_18_gravis_data:/var/lib/postgresql
 
-  voosto-server:
-    image: rajraiyani/voosto-server:latest
+  gravis-server:
+    image: rajraiyani/gravis-server:latest
     pull_policy: always
     depends_on:
       - postgres-18
-    container_name: voosto-server
+    container_name: gravis-server
     ports:
       - "3007:3007"
     env_file:
@@ -26,5 +26,5 @@ services:
       - ./tmp:/app/tmp
 
 volumes:
-  postgres_18_voosto_data:
+  postgres_18_gravis_data:
     driver: local

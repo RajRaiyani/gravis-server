@@ -42,7 +42,7 @@ app.get('/ping', (req, res) => {
 app.use('/admin', adminRoutes);
 app.use('/e-commerce', eCommerceRoutes);
 
-app.use('/files',express.static(env.fileStoragePath))
+app.use('/files', express.static(env.fileStoragePath));
 
 // Error handler
 app.use(errorHandler);
