@@ -26,7 +26,8 @@ export const ValidationSchema = {
     sale_price: z
       .number()
       .int()
-      .min(0, 'Sale price must be greater than or equal to 0').transform(val => Math.round(val*100)),
+      .min(0, 'Sale price must be greater than or equal to 0')
+      .max(10000000000, 'Sale price must be less than 10000000000 paisa'),
     image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }),
   }),
 };
@@ -91,7 +92,6 @@ export async function Controller(
     );
 
     // Insert product images
-
     await db.query(
       `INSERT INTO product_images (product_id, image_id, is_primary)
         VALUES ($1, $2, $3)`,
@@ -103,7 +103,6 @@ export async function Controller(
       'saved',
       image_id,
     ]);
-
 
     await db.query('COMMIT');
 
