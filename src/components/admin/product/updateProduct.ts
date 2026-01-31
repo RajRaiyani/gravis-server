@@ -23,6 +23,12 @@ export const ValidationSchema = {
     tags: z.array(z.string()).max(20, 'Maximum 20 tags allowed').default([]),
     metadata: z.object({}).default({}),
     points: z.array(z.string().trim().max(70, 'Points must be less than 70 characters')).default([]),
+    technical_details: z.array(
+      z.object({
+        label: z.string(),
+        value: z.string(),
+      })
+    ).default([]),
     sale_price_in_paisa: z
       .number()
       .int()
@@ -47,6 +53,7 @@ export async function Controller(
     sale_price_in_paisa,
     image_id,
     points,
+    technical_details,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   try {
@@ -96,8 +103,9 @@ export async function Controller(
         metadata = $5,
         sale_price_in_paisa = $6,
         points = $7,
+        technical_details = $8,
         updated_at = now()
-      WHERE id = $8
+      WHERE id = $9
        RETURNING *`,
       [
         category_id,
@@ -107,6 +115,7 @@ export async function Controller(
         metadata || {},
         sale_price_in_paisa,
         points || [],
+        technical_details || [],
         id,
       ],
     );
@@ -140,4 +149,3 @@ export async function Controller(
     return next(error);
   }
 }
-
