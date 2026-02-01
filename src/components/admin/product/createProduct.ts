@@ -25,9 +25,8 @@ export const ValidationSchema = {
     })).default([]),
     sale_price: z
       .number()
-      .int()
       .min(0, 'Sale price must be greater than or equal to 0')
-      .max(10000000000, 'Sale price must be less than 10000000000 paisa'),
+      .max(100000000, 'Sale price must be less than 100000000 rupees').transform(val => Math.round(val*100)),
     image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }),
   }),
 };
