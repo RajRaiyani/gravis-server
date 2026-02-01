@@ -36,6 +36,11 @@ export async function Controller(
           'name', pc.name,
           'description', pc.description
         ) as category,
+        json_build_object(
+          'id', fp.id,
+          'key', fp.key,
+          'url', ('${env.fileStorageEndpoint}/' || fp.key)
+        ) as primary_image,
         COALESCE(
           json_agg(
             DISTINCT jsonb_build_object(
@@ -53,9 +58,11 @@ export async function Controller(
       FROM products p
       LEFT JOIN product_categories pc ON p.category_id = pc.id
       LEFT JOIN product_images pi ON p.id = pi.product_id
+      LEFT JOIN product_images ppi ON p.id = ppi.product_id AND ppi.is_primary = true
       LEFT JOIN files f ON pi.image_id = f.id
+      LEFT JOIN files fp ON ppi.image_id = fp.id
       WHERE p.id = $1
-      GROUP BY p.id, pc.id, pc.name, pc.description
+      GROUP BY p.id, pc.id, pc.name, pc.description, fp.id, fp.key
     `;
 
     const product = await db.queryOne(productQuery, [id]);

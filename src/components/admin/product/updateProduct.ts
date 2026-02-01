@@ -29,10 +29,10 @@ export const ValidationSchema = {
         value: z.string(),
       })
     ).default([]),
-    sale_price_in_paisa: z
+    sale_price: z
       .number()
-      .int()
-      .min(0, 'Sale price must be greater than or equal to 0').max(10000000000, 'Sale price must be less than 10000000000 paisa'),
+      .min(0, 'Sale price must be greater than or equal to 0').max(100000000, 'Sale price must be less than 100000000 rupees')
+      .transform(val => Math.round(val*100)),
     image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }),
   }),
 };
@@ -50,7 +50,7 @@ export async function Controller(
     description,
     tags,
     metadata,
-    sale_price_in_paisa,
+    sale_price,
     image_id,
     points,
     technical_details,
@@ -113,7 +113,7 @@ export async function Controller(
         description || null,
         tags || [],
         metadata || {},
-        sale_price_in_paisa,
+        sale_price,
         points || [],
         technical_details || [],
         id,
@@ -131,10 +131,10 @@ export async function Controller(
 
     // Insert or update images
     await db.query(
-          `INSERT INTO product_images (product_id, image_id, is_primary)
+      `INSERT INTO product_images (product_id, image_id, is_primary)
           VALUES ($1, $2, $3)`,
-          [id, image_id, true],
-        );
+      [id, image_id, true],
+    );
 
     await db.query('UPDATE files SET _status = $1 WHERE id = $2', [
       'saved',

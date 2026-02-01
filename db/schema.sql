@@ -1,4 +1,4 @@
-\restrict OdaM3XkIzr4crUggaeDOkHmZTxvC4pQKL01FdZihbyy0ATf5gfacAuQSSU6Cdeh
+\restrict QHjodqmANn7uRQRGqLd4PBPkPDRvWGtn0rL05q7W3WnaRgqtrwfAaDXEz1DpqqS
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -87,9 +87,10 @@ CREATE TABLE public.products (
     technical_details jsonb[] DEFAULT '{}'::jsonb[] NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
     sale_price_in_paisa integer NOT NULL,
-    sale_price_in_rupee numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa / 100))::numeric, 2)) STORED,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone
+    updated_at timestamp with time zone,
+    sale_price_in_rupee numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa)::numeric / 100.00), 2)) STORED,
+    sale_price numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa)::numeric / 100.00), 2)) STORED
 );
 
 
@@ -250,7 +251,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict OdaM3XkIzr4crUggaeDOkHmZTxvC4pQKL01FdZihbyy0ATf5gfacAuQSSU6Cdeh
+\unrestrict QHjodqmANn7uRQRGqLd4PBPkPDRvWGtn0rL05q7W3WnaRgqtrwfAaDXEz1DpqqS
 
 
 --
@@ -259,4 +260,5 @@ ALTER TABLE ONLY public.products
 
 INSERT INTO public.schema_migrations (version) VALUES
     ('20251222074521'),
-    ('20251222111056');
+    ('20251222111056'),
+    ('20260201065509');
