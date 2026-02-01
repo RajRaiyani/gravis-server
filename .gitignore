@@ -20,3 +20,5 @@ meta.json
 /commands
 
 FCM.json
+
+/test.ts

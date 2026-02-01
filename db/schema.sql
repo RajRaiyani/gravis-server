@@ -1,4 +1,4 @@
-\restrict QHjodqmANn7uRQRGqLd4PBPkPDRvWGtn0rL05q7W3WnaRgqtrwfAaDXEz1DpqqS
+\restrict DgVANjnYma1BaaYWh1xOc7XqAEWMa6bChDHHVAqngqgnXbJ6JryEk1xuDtsWtdu
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -28,7 +28,8 @@ CREATE TABLE public.files (
     key text NOT NULL,
     size bigint,
     _status character varying(100) DEFAULT 'pending'::character varying NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    mimetype character varying(150)
 );
 
 
@@ -251,7 +252,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict QHjodqmANn7uRQRGqLd4PBPkPDRvWGtn0rL05q7W3WnaRgqtrwfAaDXEz1DpqqS
+\unrestrict DgVANjnYma1BaaYWh1xOc7XqAEWMa6bChDHHVAqngqgnXbJ6JryEk1xuDtsWtdu
 
 
 --
@@ -261,4 +262,5 @@ ALTER TABLE ONLY public.products
 INSERT INTO public.schema_migrations (version) VALUES
     ('20251222074521'),
     ('20251222111056'),
-    ('20260201065509');
+    ('20260201065509'),
+    ('20260201191416');

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import { z } from 'zod';
+import { SaveFile } from '@/components/file/file.service.js';
 
 export const ValidationSchema = {
   body: z.object({
@@ -98,10 +99,7 @@ export async function Controller(
     );
 
     // Mark file as saved
-    await db.query('UPDATE files SET _status = $1 WHERE id = $2', [
-      'saved',
-      image_id,
-    ]);
+    await SaveFile(db, image_id);
 
     await db.query('COMMIT');
 

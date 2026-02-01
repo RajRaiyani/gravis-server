@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import { z } from 'zod';
+import { SaveFile, DeleteFile } from '@/components/file/file.service.js';
 
 export const ValidationSchema = {
   params: z.object({
@@ -63,17 +64,11 @@ export async function Controller(
     );
 
     // Mark the new image as saved
-    await db.query('UPDATE files SET _status = $1 WHERE id = $2', [
-      'saved',
-      image_id,
-    ]);
+    await SaveFile(db, image_id);
 
     // If image has changed, optionally mark the old image as deleted
     if (existingCategory.image_id && existingCategory.image_id !== image_id) {
-      await db.query('UPDATE files SET _status = $1 WHERE id = $2', [
-        'deleted',
-        existingCategory.image_id,
-      ]);
+      await DeleteFile(db, existingCategory.image_id);
     }
 
     await db.query('COMMIT');

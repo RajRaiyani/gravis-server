@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import { z } from 'zod';
+import { SaveFile } from '@/components/file/file.service.js';
 
 export const ValidationSchema = {
   params: z.object({
@@ -33,7 +34,7 @@ export const ValidationSchema = {
       .number()
       .min(0, 'Sale price must be greater than or equal to 0').max(100000000, 'Sale price must be less than 100000000 rupees')
       .transform(val => Math.round(val*100)),
-    image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }),
+    image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }).optional(),
   }),
 };
 
@@ -121,25 +122,27 @@ export async function Controller(
     );
 
     const currentPrimaryImage = await db.queryOne('select image_id from product_images where product_id = $1 and is_primary = $2', [id, true]);
-    if (currentPrimaryImage) {
+
+    if (currentPrimaryImage && currentPrimaryImage.image_id !== image_id) {
+
       await db.query('UPDATE files SET _status = $1 WHERE id = $2', [
         'deleted',
         currentPrimaryImage.image_id,
       ]);
+
       await db.query('DELETE FROM product_images WHERE product_id = $1 and is_primary = $2', [id, true]);
+
+
+      await db.query(`
+          INSERT INTO product_images (product_id, image_id, is_primary)
+          VALUES ($1, $2, $3)
+        `,
+      [id, image_id, true],
+      );
+
+      await SaveFile(db, image_id);
     }
 
-    // Insert or update images
-    await db.query(
-      `INSERT INTO product_images (product_id, image_id, is_primary)
-          VALUES ($1, $2, $3)`,
-      [id, image_id, true],
-    );
-
-    await db.query('UPDATE files SET _status = $1 WHERE id = $2', [
-      'saved',
-      image_id,
-    ]);
 
     await db.query('COMMIT');
 
