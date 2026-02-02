@@ -1,0 +1,868 @@
+{
+  "info": {
+    "_postman_id": "09e80be2-27f4-4da0-aca5-0628ce432e5a",
+    "name": "Gravis",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "e-commerce",
+      "item": [
+        {
+          "name": "Customer",
+          "item": [
+            {
+              "name": "Register",
+              "id": "235ad4fc-09e0-4760-a877-0326cf2e0baa",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "5c3b9d01-1f50-4500-8c94-8574cf6a13ef"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"yash\",\n  \"last_name\": \"chauhan\",\n  \"email\": \"yashchauhan1775@gmail.com\",\n  \"password\": \"yash@1775\",\n  \"phone_number\": \"1234567890\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "register"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Verify registration",
+              "id": "4210c73d-f3a6-431d-aae6-7749c7e4ad90",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "455c4d8e-5ee9-4aba-9674-7fdb230cbee1"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfcmVnaXN0cmF0aW9uX3Rva2VuIiwiZmlyc3RfbmFtZSI6Inlhc2giLCJsYXN0X25hbWUiOiJjaGF1aGFuIiwiZW1haWwiOiJ5YXNoY2hhdWhhbjE3NzVAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ5YXNoQDE3NzUiLCJwaG9uZV9udW1iZXIiOiIxMjM0NTY3ODkwIiwiZ3Vlc3RfY2FydF9pZCI6bnVsbCwiaWF0IjoxNzcwMDYzMjgyLCJleHAiOjE3NzAwNjM4ODJ9.LEXyN9J01G-N3gpNMZRJ1ZJe0xz8n0QzO1Ib6Lfo_xM\",\n  \"otp\": \"519476\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/verify-email",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "verify-email"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Resend Verification",
+              "id": "ecf0aaf0-9ad8-4a3b-99df-ac676493726d",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfcmVnaXN0cmF0aW9uX3Rva2VuIiwiZmlyc3RfbmFtZSI6InNtaXQiLCJsYXN0X25hbWUiOiJjaGF1aGFuIiwiZW1haWwiOiJ5YXNoY2hhdWhhbjkyODRAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ5YXNoQDE3NzUiLCJwaG9uZV9udW1iZXIiOiIxMjM0NTY3ODkwIiwiZ3Vlc3RfY2FydF9pZCI6bnVsbCwiaWF0IjoxNzcwMDM3MjYwLCJleHAiOjE3NzAwMzc4NTl9.z0THh4xO_ooLkcnoblUQVm7TyY7pwj_1EPQHD3i258Y\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/resend-verification",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "resend-verification"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login",
+              "id": "fd55c6cb-a13a-4678-a781-6fd76113c4a3",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"yashchauhan1775@gmail.com\",\n  \"password\": \"yash@op\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Profile",
+              "id": "dc1787cc-88d7-491a-a1d5-58bebf9b22c3",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwMDYzMzI3LCJleHAiOjE3NzA2NjgxMjd9.8yqNzeCu4BTP_JV2oDcwY7b_Glhte3tbIdQHFDK6D88",
+                    "type": "text",
+                    "uuid": "c1495deb-ec7c-4e17-bf63-87f9ee9cb429"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "profile"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update profile",
+              "id": "e7459097-ecc9-412b-9769-c5a3c89b150b",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwMDYzMzI3LCJleHAiOjE3NzA2NjgxMjd9.8yqNzeCu4BTP_JV2oDcwY7b_Glhte3tbIdQHFDK6D88",
+                    "type": "text",
+                    "uuid": "3087e61c-245d-47cb-9411-b46aadc979f9"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "1202e915-e81c-43cc-baca-7991d3daa2d4"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"yash1\",\n  \"phone_number\": \"9988776655\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "profile"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Change Password",
+              "id": "2cf2047a-7d25-4ee3-b971-bd22adf0d62b",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwMDYzMzI3LCJleHAiOjE3NzA2NjgxMjd9.8yqNzeCu4BTP_JV2oDcwY7b_Glhte3tbIdQHFDK6D88",
+                    "type": "text",
+                    "uuid": "f3f22701-4130-499d-b8ce-e6f751a84521"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "e47c7023-ea27-4729-a2b6-89a0a4a3093b"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current_password\": \"yash@1775\",\n  \"new_password\": \"yash@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/change-password",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "change-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Forget Password",
+              "id": "69d9ce0a-3183-4cf5-8cb2-77f57f5d22f3",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"yashchauhan1775@gmail.com\",\n  \"redirect_url\": \"http://localhost:3007/reset-password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/forgot-password",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "forgot-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reset Password",
+              "id": "77146720-d96c-4877-b23b-25ea405ce9f0",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfcGFzc3dvcmRfcmVzZXQiLCJjdXN0b21lcl9pZCI6IjAxOWMxZmZlLWIwN2UtNzFlZi1iMGU0LTljYTM0NWQ0NzE3YSIsImlhdCI6MTc3MDA2MzQxMCwiZXhwIjoxNzcwMDY0MzEwfQ.bsllbwYcLBVeIkA4RaQfLfj9MjWJCMAMCJAtcbWHDbA\",\n  \"new_password\": \"yash@op\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/reset-password",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "reset-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Log out",
+              "id": "fe44e96f-2f40-4a00-8f7b-272b060ee1be",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFlMTQtNjc0YS03ZDBmLWExYzgtZDU2NjJhMjNhM2U3IiwiaWF0IjoxNzcwMDM4NDk0LCJleHAiOjE3NzA2NDMyOTR9.wr-lO1maD5FPlo8ur8UV5qziZeaJelSR5_RylLJp3yc",
+                    "type": "text",
+                    "uuid": "eb655257-34b8-4626-af69-ea60c8d737d2"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/customers/logout",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "customers",
+                    "logout"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "7998c681-c059-467d-bb05-3f31db217069"
+        },
+        {
+          "name": "Cart",
+          "item": [
+            {
+              "name": "Guest Cart",
+              "item": [
+                {
+                  "name": "Update Guest Cart Item",
+                  "id": "7363417a-f390-4d32-ae89-b25ff50ae376",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"quantity\": 50\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/e-commerce/cart/guest/{{guest_cart_id}}/items/{{cart_item_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "e-commerce",
+                        "cart",
+                        "guest",
+                        "{{guest_cart_id}}",
+                        "items",
+                        "{{cart_item_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Guest Cart",
+                  "id": "252b917c-c41f-4b9d-85a7-fcd825ed72bf",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/e-commerce/cart/guest",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "e-commerce",
+                        "cart",
+                        "guest"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Add to Cart",
+                  "id": "50ad16c1-b812-49e7-833b-dca5ea571542",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"product_id\": \"019c041b-b5b3-7103-8029-79c24266eeda\",\n  \"quantity\": 4\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/e-commerce/cart/guest/{{guest_cart_id}}/items",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "e-commerce",
+                        "cart",
+                        "guest",
+                        "{{guest_cart_id}}",
+                        "items"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Guest Cart",
+                  "id": "a380511f-4a51-4054-a5a0-ac595a85d206",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/e-commerce/cart/guest/{{guest_cart_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "e-commerce",
+                        "cart",
+                        "guest",
+                        "{{guest_cart_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Remove Guest Cart Item",
+                  "id": "ee2e80c3-200d-4db6-98e2-37fa0f344ecc",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/e-commerce/cart/guest/{{guest_cart_id}}/items/{{cart_item_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "e-commerce",
+                        "cart",
+                        "guest",
+                        "{{guest_cart_id}}",
+                        "items",
+                        "{{cart_item_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Clear Guest Cart",
+                  "id": "493b8ec4-62e5-48a8-a3eb-362f4a98583a",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/e-commerce/cart/guest/{{guest_cart_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "e-commerce",
+                        "cart",
+                        "guest",
+                        "{{guest_cart_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ],
+              "id": "50c2e561-85ed-46db-a9f3-a77acdabf1d8"
+            },
+            {
+              "name": "Get Customer Cart",
+              "id": "9ca89622-641d-4da0-beeb-c70ff3c0756c",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFlMTQtNjc0YS03ZDBmLWExYzgtZDU2NjJhMjNhM2U3IiwiaWF0IjoxNzcwMDYxNzU2LCJleHAiOjE3NzA2NjY1NTZ9.DjqJKuCzKbgFPSimg0dFoGW9iAcDhVlWGoWzIRJNouk",
+                    "type": "text",
+                    "uuid": "430dbf88-bd6c-464b-92a6-fc54c0a1c4ac"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/cart",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "cart"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Item to Customer Cart",
+              "id": "0866e346-1a52-4769-8cb0-561169f703fe",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFlMTQtNjc0YS03ZDBmLWExYzgtZDU2NjJhMjNhM2U3IiwiaWF0IjoxNzcwMDYxNzU2LCJleHAiOjE3NzA2NjY1NTZ9.DjqJKuCzKbgFPSimg0dFoGW9iAcDhVlWGoWzIRJNouk",
+                    "type": "text",
+                    "uuid": "66a8d46f-23af-4913-9a5f-a03e8fc80bee"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "ce481055-0d47-46eb-b4eb-1e90c41a9719"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"019c041b-b5b3-7103-8029-79c24266eeda\",\n  \"quantity\": 6\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/cart/items",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "cart",
+                    "items"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Customer Cart Item",
+              "id": "a7a3232a-2a8a-4f2b-9339-cd92c160b5df",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFlMTQtNjc0YS03ZDBmLWExYzgtZDU2NjJhMjNhM2U3IiwiaWF0IjoxNzcwMDYxNzU2LCJleHAiOjE3NzA2NjY1NTZ9.DjqJKuCzKbgFPSimg0dFoGW9iAcDhVlWGoWzIRJNouk",
+                    "type": "text",
+                    "uuid": "75fa285e-3ee2-482a-a4bb-af78a99a1c0f"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "9454638f-09e6-48f1-b04c-fd24d787ef05"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quantity\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/cart/items/{{cart_item_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "cart",
+                    "items",
+                    "{{cart_item_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remove Customer Cart Item",
+              "id": "54088c25-52e9-43a4-8f89-2efd5d8ef6d6",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFlMTQtNjc0YS03ZDBmLWExYzgtZDU2NjJhMjNhM2U3IiwiaWF0IjoxNzcwMDYxNzU2LCJleHAiOjE3NzA2NjY1NTZ9.DjqJKuCzKbgFPSimg0dFoGW9iAcDhVlWGoWzIRJNouk",
+                    "type": "text",
+                    "uuid": "9d7dddfb-9407-456b-8d7e-02a8394e0b04"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/cart/items/{{cart_item_id}}?",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "cart",
+                    "items",
+                    "{{cart_item_id}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "",
+                      "value": null,
+                      "type": "text",
+                      "uuid": "e6936ff1-53eb-4512-bfb7-7094264dfb55"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Clear Customer Cart",
+              "id": "22cc5ec8-9a1f-4335-9e0b-8db0e450a69e",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFlMTQtNjc0YS03ZDBmLWExYzgtZDU2NjJhMjNhM2U3IiwiaWF0IjoxNzcwMDYxNzU2LCJleHAiOjE3NzA2NjY1NTZ9.DjqJKuCzKbgFPSimg0dFoGW9iAcDhVlWGoWzIRJNouk",
+                    "type": "text",
+                    "uuid": "6dbed1f7-45e8-4002-b0c8-4397a1f8b5e8"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/cart",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "cart"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "943963c9-287f-458d-94f5-0f8200ab317b"
+        }
+      ],
+      "id": "b1711c8a-ce24-4e90-aabc-5a66d32f5c01"
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Customer",
+          "item": [
+            {
+              "name": "List Customers",
+              "id": "507c27ca-ebbf-4858-a432-ac3335d49958",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzAwNjQwNDYsImV4cCI6MTc3MDE1MDQ0Nn0.ihuV-3azLcfZ1pqAAx2zFDifTCKJWQ8l7qJc1Ay73zw",
+                    "type": "text",
+                    "uuid": "a06c5d16-21d4-4d75-9f4f-640ab0ffaa03"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/customers?page=1&limit=10&search=john",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "customers"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "uuid": "d8b1d497-584c-42f7-a306-d25887dcd103"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "uuid": "7f8ba5dc-cba7-4d0f-90df-062c7e71f7b4"
+                    },
+                    {
+                      "key": "search",
+                      "value": "john",
+                      "uuid": "51fb42eb-1a56-44a4-8d81-6c23516ac803"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Single Customer",
+              "id": "e13a6f3b-9a6d-409f-82ef-119f11430a2a",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzAwNjI4ODQsImV4cCI6MTc3MDE0OTI4NH0.AfD1h5NOIs_CDjSXtQkrj3dJiTzamey4f5iRau-iqh8",
+                    "type": "text",
+                    "uuid": "46876be0-c4e3-4dd0-85c7-c7fd346cedbb"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/customers/{{customer_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "customers",
+                    "{{customer_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Customer Status",
+              "id": "a56b04bc-92b9-46a4-a028-1e47ec116c33",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzAwNjI4ODQsImV4cCI6MTc3MDE0OTI4NH0.AfD1h5NOIs_CDjSXtQkrj3dJiTzamey4f5iRau-iqh8",
+                    "type": "text",
+                    "uuid": "793b98d8-fd26-4658-819f-ffae18eabb9d"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"is_email_verified\": true,\n  \"is_phone_number_verified\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/customers/{{customer_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "customers",
+                    "{{customer_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Customer",
+              "id": "6cbe69f4-7b87-431c-bfbb-43acb2e6c7dd",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzAwNjI4ODQsImV4cCI6MTc3MDE0OTI4NH0.AfD1h5NOIs_CDjSXtQkrj3dJiTzamey4f5iRau-iqh8",
+                    "type": "text",
+                    "uuid": "42c804fb-b672-4eda-beb0-2dda47b48bd5"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/customers/{{customer_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "customers",
+                    "{{customer_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "c075f471-302a-4c20-9e69-c3f00a83324d"
+        },
+        {
+          "name": "admin login",
+          "id": "493c776e-5dad-410e-a979-ef3ffe597e07",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_or_phone_number\": \"1234567890\",\n  \"password\": \"admin@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "82e37ddf-8363-498a-850b-207bd5844b8e"
+    },
+    {
+      "name": "base",
+      "id": "f5e975d5-897d-4063-b8ca-eed44c46c6b3",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}",
+          "host": [
+            "{{base_url}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
