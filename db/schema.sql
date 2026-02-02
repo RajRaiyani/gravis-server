@@ -1,4 +1,4 @@
-\restrict DgVANjnYma1BaaYWh1xOc7XqAEWMa6bChDHHVAqngqgnXbJ6JryEk1xuDtsWtdu
+\restrict 3U3G2g2Z5TLkhbAuSlyzIMeDsPcTAf1gD2SKJdrYSv5RsBMLHTwJsQZZs5uCXrP
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -18,6 +18,51 @@ SET row_security = off;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: cart_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cart_items (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    cart_id uuid NOT NULL,
+    product_id uuid NOT NULL,
+    quantity integer DEFAULT 1 NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone
+);
+
+
+--
+-- Name: carts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.carts (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    customer_id uuid,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone
+);
+
+
+--
+-- Name: customers; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.customers (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    first_name character varying(255) NOT NULL,
+    last_name character varying(255) NOT NULL,
+    full_name character varying(255) GENERATED ALWAYS AS ((((first_name)::text || ' '::text) || (last_name)::text)) STORED,
+    email character varying(255) NOT NULL,
+    is_email_verified boolean DEFAULT false NOT NULL,
+    phone_number character varying(15),
+    is_phone_number_verified boolean DEFAULT false NOT NULL,
+    password_hash text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone
+);
+
 
 --
 -- Name: files; Type: TABLE; Schema: public; Owner: -
@@ -105,6 +150,18 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: tokens; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tokens (
+    token text NOT NULL,
+    meta_data jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    expires_at timestamp with time zone NOT NULL
+);
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -118,6 +175,30 @@ CREATE TABLE public.users (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone
 );
+
+
+--
+-- Name: cart_items pk_cart_items; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT pk_cart_items PRIMARY KEY (id);
+
+
+--
+-- Name: carts pk_customer_carts; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts
+    ADD CONSTRAINT pk_customer_carts PRIMARY KEY (id);
+
+
+--
+-- Name: customers pk_customers; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.customers
+    ADD CONSTRAINT pk_customers PRIMARY KEY (id);
 
 
 --
@@ -161,6 +242,14 @@ ALTER TABLE ONLY public.products
 
 
 --
+-- Name: tokens pk_tokens; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tokens
+    ADD CONSTRAINT pk_tokens PRIMARY KEY (token);
+
+
+--
 -- Name: users pk_users; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -174,6 +263,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: customers uk_customers_email; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.customers
+    ADD CONSTRAINT uk_customers_email UNIQUE (email);
 
 
 --
@@ -217,6 +314,30 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: cart_items fk_cart_items_cart_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT fk_cart_items_cart_id FOREIGN KEY (cart_id) REFERENCES public.carts(id);
+
+
+--
+-- Name: cart_items fk_cart_items_product_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT fk_cart_items_product_id FOREIGN KEY (product_id) REFERENCES public.products(id);
+
+
+--
+-- Name: carts fk_customer_carts_customer_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts
+    ADD CONSTRAINT fk_customer_carts_customer_id FOREIGN KEY (customer_id) REFERENCES public.customers(id);
+
+
+--
 -- Name: product_categories fk_product_categories_image_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -252,7 +373,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict DgVANjnYma1BaaYWh1xOc7XqAEWMa6bChDHHVAqngqgnXbJ6JryEk1xuDtsWtdu
+\unrestrict 3U3G2g2Z5TLkhbAuSlyzIMeDsPcTAf1gD2SKJdrYSv5RsBMLHTwJsQZZs5uCXrP
 
 
 --
@@ -263,4 +384,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20251222074521'),
     ('20251222111056'),
     ('20260201065509'),
-    ('20260201191416');
+    ('20260201191416'),
+    ('20260202051143');
