@@ -4,7 +4,7 @@ import productCategoryRoutes from './product-category.route.js';
 import productRoutes from './product.route.js';
 import fileRoutes from './file.route.js';
 import inquiryRoutes from './inquiry.route.js';
-
+import customerRoutes from './customer.route.js';
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ router.use('/product-categories', productCategoryRoutes);
 router.use('/products', productRoutes);
 router.use('/files', fileRoutes);
 router.use('/inquiry', inquiryRoutes);
+router.use('/customers', customerRoutes);
 
 export default router;
