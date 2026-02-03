@@ -17,15 +17,15 @@ export async function Controller(
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 3600000);
 
-  await db.query(
-    `INSERT INTO tokens (token, expires_at, meta_data)
-     VALUES ($1, $2, $3)
-     ON CONFLICT (token) DO NOTHING`,
-    [
-      token,
-      expiresAt.toISOString(),
-      { type: 'customer_auth_blacklist', invalidated_at: new Date().toISOString() },
-    ]
+  await db.query(`--sql
+      INSERT INTO tokens (token, expires_at, meta_data)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (token) DO NOTHING`,
+  [
+    token,
+    expiresAt.toISOString(),
+    { type: 'customer_auth_blacklist', invalidated_at: new Date().toISOString() },
+  ]
   );
 
   return res.status(200).json({ message: 'Logged out successfully' });

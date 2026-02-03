@@ -1,4 +1,4 @@
-\restrict 3U3G2g2Z5TLkhbAuSlyzIMeDsPcTAf1gD2SKJdrYSv5RsBMLHTwJsQZZs5uCXrP
+\restrict ABR3hH29vDU8CJLc034Z4O16F1iw8mhbdV2dcZ0LtYRSnEYZ52jmAGMKxH9Dvma
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -41,7 +41,8 @@ CREATE TABLE public.carts (
     id uuid DEFAULT uuidv7() NOT NULL,
     customer_id uuid,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone
+    updated_at timestamp with time zone,
+    guest_id uuid
 );
 
 
@@ -266,6 +267,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: cart_items uk_cart_id_product_id; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT uk_cart_id_product_id UNIQUE (cart_id, product_id);
+
+
+--
 -- Name: customers uk_customers_email; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -373,7 +382,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 3U3G2g2Z5TLkhbAuSlyzIMeDsPcTAf1gD2SKJdrYSv5RsBMLHTwJsQZZs5uCXrP
+\unrestrict ABR3hH29vDU8CJLc034Z4O16F1iw8mhbdV2dcZ0LtYRSnEYZ52jmAGMKxH9Dvma
 
 
 --
@@ -385,4 +394,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20251222111056'),
     ('20260201065509'),
     ('20260201191416'),
-    ('20260202051143');
+    ('20260202051143'),
+    ('20260203051605');
