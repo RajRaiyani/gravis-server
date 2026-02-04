@@ -32,11 +32,9 @@ export async function Controller(
   const { token, otp } = req.body as z.infer<typeof ValidationSchema.body>;
   const guest_id = req.headers['x-guest-id'] as string | undefined;
 
-  let tokenData: RegistrationTokenPayload;
+  const tokenData = JwtToken.decode(token) as RegistrationTokenPayload | null;
 
-  try {
-    tokenData = JwtToken.decode(token) as RegistrationTokenPayload;
-  } catch {
+  if (!tokenData) {
     return res.status(400).json({ message: 'Invalid or expired token' });
   }
 
