@@ -13,7 +13,7 @@ export const ValidationSchema = {
     email: CustomerSchema.email(),
     password: CustomerSchema.password(),
     phone_number: CustomerSchema.phoneNumber(),
-    guest_cart_id: z.string().uuid().optional(),
+    guest_cart_id: z.uuid({ version: 'v7', message: 'Invalid guest cart ID' }).optional(),
   }),
 };
 

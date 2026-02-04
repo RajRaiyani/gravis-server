@@ -4,7 +4,7 @@ import WithDatabase from '@/utils/withDatabase.js';
 import PrivateRoute from '@/middleware/admin/adminPrivateRoute.js';
 import uploadImage from '@/middleware/multer/imageUpload.js';
 
-import { Controller as listProductsController } from '@/components/admin/product/listProducts.js';
+import { ValidationSchema as listProductsValidationSchema, Controller as listProductsController } from '@/components/admin/product/listProducts.js';
 import {
   ValidationSchema as createProductValidationSchema,
   Controller as createProductController,
@@ -34,7 +34,7 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(PrivateRoute, WithDatabase(listProductsController))
+  .get(PrivateRoute, validate(listProductsValidationSchema), WithDatabase(listProductsController))
   .post(
     PrivateRoute,
     uploadImage.single('image'),

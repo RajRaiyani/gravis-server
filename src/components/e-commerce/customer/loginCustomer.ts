@@ -5,10 +5,12 @@ import JwtToken from '@/utils/jwtToken.js';
 import bcrypt from 'bcryptjs';
 
 export const ValidationSchema = {
+  headers: z.object({
+    'x-guest-id': z.uuid({ version: 'v7', message: 'Invalid guest ID' }).optional(),
+  }),
   body: z.object({
     email: z.email().toLowerCase(),
     password: z.string().trim().nonempty().max(100),
-    guest_cart_id: z.string().uuid().optional(),
   }),
 };
 
@@ -18,9 +20,8 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const { email, password, guest_cart_id } = req.body as z.infer<
-    typeof ValidationSchema.body
-  >;
+  const { email, password } = req.body as z.infer<typeof ValidationSchema.body>;
+  const guest_id = req.headers['x-guest-id'] as string | undefined;
 
   const customer = await db.queryOne(
     `SELECT
@@ -41,70 +42,47 @@ export async function Controller(
     return res.status(400).json({ message: 'Invalid email or password' });
   }
 
-  let cartId: string | null = null;
+  if (!customer.is_email_verified) {
+    return res.status(400).json({ message: 'Please verify your email first' });
+  }
 
-  try {
-    await db.query('BEGIN');
+  // Handle guest cart merge/transfer
+  if (guest_id) {
+    const guestCart = await db.queryOne(
+      'SELECT id FROM carts WHERE guest_id = $1 AND customer_id IS NULL',
+      [guest_id]
+    );
 
-    // Handle guest cart merge
-    if (guest_cart_id) {
-      const guestCart = await db.queryOne(
-        'SELECT id FROM carts WHERE id = $1 AND customer_id IS NULL',
-        [guest_cart_id]
-      );
-
-      if (guestCart) {
-        // Check if customer already has a cart
-        const customerCart = await db.queryOne(
-          'SELECT id FROM carts WHERE customer_id = $1',
-          [customer.id]
-        );
-
-        if (customerCart) {
-          // Merge: Move guest cart items to customer cart
-          // For duplicate products, sum the quantities
-          await db.query(
-            `INSERT INTO cart_items (cart_id, product_id, quantity)
-             SELECT $1, gi.product_id, gi.quantity
-             FROM cart_items gi
-             WHERE gi.cart_id = $2
-             ON CONFLICT (cart_id, product_id)
-             DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity, updated_at = NOW()`,
-            [customerCart.id, guestCart.id]
-          );
-
-          // Delete guest cart items and cart
-          await db.query('DELETE FROM cart_items WHERE cart_id = $1', [guestCart.id]);
-          await db.query('DELETE FROM carts WHERE id = $1', [guestCart.id]);
-
-          cartId = customerCart.id;
-        } else {
-          // Transfer: Assign guest cart to customer
-          await db.query(
-            'UPDATE carts SET customer_id = $1, updated_at = NOW() WHERE id = $2',
-            [customer.id, guestCart.id]
-          );
-          cartId = guestCart.id;
-        }
-      }
-    }
-
-    // If no cart was assigned, check for existing customer cart
-    if (!cartId) {
-      const existingCart = await db.queryOne(
+    if (guestCart) {
+      const customerCart = await db.queryOne(
         'SELECT id FROM carts WHERE customer_id = $1',
         [customer.id]
       );
-      cartId = existingCart?.id || null;
-    }
 
-    await db.query('COMMIT');
-  } catch (err) {
-    await db.query('ROLLBACK');
-    throw err;
+      if (customerCart) {
+        // Customer has cart: merge guest items into customer cart
+        await db.query(
+          `INSERT INTO cart_items (cart_id, product_id, quantity)
+           SELECT $1, product_id, quantity FROM cart_items WHERE cart_id = $2
+           ON CONFLICT (cart_id, product_id)
+           DO UPDATE SET quantity = EXCLUDED.quantity, updated_at = NOW()`,
+          //  DO UPDATE SET quantity = EXCLUDED.quantity, updated_at = NOW()`,
+          [customerCart.id, guestCart.id]
+        );
+
+        await db.query('DELETE FROM cart_items WHERE cart_id = $1', [guestCart.id]);
+        await db.query('DELETE FROM carts WHERE id = $1', [guestCart.id]);
+      } else {
+        // Customer has no cart: transfer guest cart to customer
+        await db.query(
+          'UPDATE carts SET customer_id = $1, guest_id = NULL, updated_at = NOW() WHERE id = $2',
+          [customer.id, guestCart.id]
+        );
+      }
+    }
   }
 
-  const tokenExpiresAt = new Date(Date.now() + 7 * 24 * 3600000); // 7 days
+  const tokenExpiresAt = new Date(Date.now() + 7 * 24 * 3600000);
 
   const authTokenPayload = {
     type: 'customer_auth_token',
@@ -127,7 +105,6 @@ export async function Controller(
       created_at: customer.created_at,
     },
     token: authToken,
-    cart_id: cartId,
     expires_at: tokenExpiresAt.toISOString(),
   });
 }

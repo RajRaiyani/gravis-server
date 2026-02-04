@@ -9,14 +9,14 @@ const transportSchema = z.object({
   password: z.string().min(2).max(255),
 });
 
-const {data: transportOptions, error, success} = transportSchema.safeParse({
+const { data: transportOptions, success } = transportSchema.safeParse({
   host: env.smtp.host,
   port: Number(env.smtp.port),
   user: env.smtp.user,
   password: env.smtp.password,
 });
 
-if (!success) throw new Error(`Invalid ENV options: ${error.message}`);
+if (!success) throw new Error('Invalid ENV options in Mail Service');
 
 
 const transport = nodemailer.createTransport({
