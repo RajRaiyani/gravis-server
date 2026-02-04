@@ -18,13 +18,15 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const query = req.query as unknown as z.infer<typeof ValidationSchema.query>;
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 20;
+  const search = (req.query.search as string) || null;
+  const sort_by = (req.query.sort_by as string) || 'created_at';
+  const sort_order = (req.query.sort_order as string) || 'desc';
 
-  const page = query.page || 1;
-  const limit = query.limit || 20;
-  const search = query.search || null;
-  const sort_by = query.sort_by || 'created_at';
-  const sort_order = query.sort_order || 'desc';
+  const allowedSortBy = ['created_at', 'first_name', 'email'];
+  const safeSortBy = allowedSortBy.includes(sort_by) ? sort_by : 'created_at';
+  const safeSortOrder = sort_order === 'asc' ? 'asc' : 'desc';
 
   const offset = (page - 1) * limit;
 
@@ -39,7 +41,7 @@ export async function Controller(
       LOWER(email) LIKE LOWER($${paramIndex}) OR
       LOWER(full_name) LIKE LOWER($${paramIndex})
     )`;
-    params.push(`%${search}%`);
+    params.push(`%${search.trim()}%`);
     paramIndex++;
   }
 
@@ -47,7 +49,6 @@ export async function Controller(
   const countResult = await db.queryOne<{ total: string }>(countQuery, params);
   const total = parseInt(countResult?.total || '0', 10);
 
-  // Add limit and offset params
   const limitParamIndex = paramIndex;
   const offsetParamIndex = paramIndex + 1;
   const dataParams = [...params, limit, offset];
@@ -59,7 +60,7 @@ export async function Controller(
       created_at, updated_at
     FROM customers
     ${whereClause}
-    ORDER BY ${sort_by} ${sort_order}
+    ORDER BY ${safeSortBy} ${safeSortOrder}
     LIMIT $${limitParamIndex} OFFSET $${offsetParamIndex}`,
     dataParams
   );

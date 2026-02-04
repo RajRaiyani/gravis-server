@@ -5,7 +5,7 @@ import env from '@/config/env.js';
 
 export const ValidationSchema = {
   headers: z.object({
-    'x-guest-id': z.string().uuid({ version: 'v7', message: 'Invalid guest ID' }).optional(),
+    'x-guest-id': z.uuid({ version: 'v7', message: 'Invalid guest ID' }).optional(),
   }),
 };
 
