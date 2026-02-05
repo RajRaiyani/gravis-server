@@ -2,11 +2,9 @@ import { z } from 'zod';
 import { Request, Response, NextFunction } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import { v7 as uuidv7 } from 'uuid';
+import JwtToken from '@/utils/jwtToken.js';
 
 export const ValidationSchema = {
-  headers: z.object({
-    'x-guest-id': z.uuid({ version: 'v7', message: 'Invalid guest ID' }).optional(),
-  }),
   params: z.object({
     product_id: z.uuid({ version: 'v7', message: 'Invalid product ID' }),
   }),
@@ -24,7 +22,7 @@ export async function Controller(
   const { product_id } = req.params as z.infer<typeof ValidationSchema.params>;
   const { quantity } = req.body as z.infer<typeof ValidationSchema.body>;
   const customer_id = req.customer?.id;
-  let guest_id = customer_id ? null : req.headers['x-guest-id'] as string | undefined;
+  let guest_id = req.guest?.id;
 
   // Verify product exists
   const product = await db.queryOne(
@@ -92,8 +90,17 @@ export async function Controller(
     await db.queryOne('DELETE FROM cart_items WHERE cart_id = $1 AND product_id = $2', [cartId, product_id]);
   }
 
+  let guestToken = null;
+
+  if (guest_id) {
+    guestToken = JwtToken.encode({
+      type: 'guest_token',
+      guest_id: guest_id,
+    });
+  }
+
   return res.status(200).json({
-    guest_id: guest_id,
+    token: guestToken,
     product_id: product_id,
   });
 }

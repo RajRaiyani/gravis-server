@@ -9,6 +9,9 @@ declare global {
       customer?: {
         id: string;
       };
+      guest?: {
+        id: string;
+      };
     }
   }
 }
