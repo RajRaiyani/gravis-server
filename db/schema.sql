@@ -1,4 +1,4 @@
-\restrict ABR3hH29vDU8CJLc034Z4O16F1iw8mhbdV2dcZ0LtYRSnEYZ52jmAGMKxH9Dvma
+\restrict q2UItJ0oBFjS3wi4C8zGGwd79Kq7SbERU9dlfBbzuUITUOSCeOuGzj7OLrK6s58
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -137,7 +137,8 @@ CREATE TABLE public.products (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone,
     sale_price_in_rupee numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa)::numeric / 100.00), 2)) STORED,
-    sale_price numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa)::numeric / 100.00), 2)) STORED
+    sale_price numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa)::numeric / 100.00), 2)) STORED,
+    can_purchase boolean DEFAULT true NOT NULL
 );
 
 
@@ -382,7 +383,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ABR3hH29vDU8CJLc034Z4O16F1iw8mhbdV2dcZ0LtYRSnEYZ52jmAGMKxH9Dvma
+\unrestrict q2UItJ0oBFjS3wi4C8zGGwd79Kq7SbERU9dlfBbzuUITUOSCeOuGzj7OLrK6s58
 
 
 --
@@ -395,4 +396,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260201065509'),
     ('20260201191416'),
     ('20260202051143'),
-    ('20260203051605');
+    ('20260203051605'),
+    ('20260205084732');

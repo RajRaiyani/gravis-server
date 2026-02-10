@@ -5,9 +5,6 @@ import JwtToken from '@/utils/jwtToken.js';
 import bcrypt from 'bcryptjs';
 
 export const ValidationSchema = {
-  headers: z.object({
-    'x-guest-id': z.uuid({ version: 'v7', message: 'Invalid guest ID' }).optional(),
-  }),
   body: z.object({
     token: z.string().trim().nonempty(),
     otp: z.string().trim().length(6),
@@ -30,7 +27,7 @@ export async function Controller(
   db: DatabaseClient
 ) {
   const { token, otp } = req.body as z.infer<typeof ValidationSchema.body>;
-  const guest_id = req.headers['x-guest-id'] as string | undefined;
+  const guest_id = req.guest?.id;
 
   const tokenData = JwtToken.decode(token) as RegistrationTokenPayload | null;
 
@@ -57,25 +54,27 @@ export async function Controller(
 
   const passwordHash = await bcrypt.hash(tokenData.password, 10);
 
-  const customer = await db.queryOne(
-    `INSERT INTO customers (first_name, last_name, email, password_hash, phone_number, is_email_verified)
-     VALUES ($1, $2, $3, $4, $5, true)
-     RETURNING id, first_name, last_name, full_name, email, phone_number, is_email_verified, created_at`,
-    [
-      tokenData.first_name,
-      tokenData.last_name,
-      tokenData.email,
-      passwordHash,
-      tokenData.phone_number,
-    ]
+  const customer = await db.queryOne(`--sql
+    INSERT INTO customers (first_name, last_name, email, password_hash, phone_number, is_email_verified)
+    VALUES ($1, $2, $3, $4, $5, true)
+    RETURNING id, first_name, last_name, full_name, email, phone_number, is_email_verified, created_at
+    `,
+  [
+    tokenData.first_name,
+    tokenData.last_name,
+    tokenData.email,
+    passwordHash,
+    tokenData.phone_number,
+  ]
   );
 
   // Transfer guest cart to new customer (new customer won't have existing cart)
   if (guest_id) {
-    await db.query(
-      `UPDATE carts SET customer_id = $1, guest_id = NULL, updated_at = NOW()
-       WHERE guest_id = $2 AND customer_id IS NULL`,
-      [customer.id, guest_id]
+    await db.query(`
+      UPDATE carts SET customer_id = $1, guest_id = NULL, updated_at = NOW()
+      WHERE guest_id = $2 AND customer_id IS NULL
+    `,
+    [customer.id, guest_id]
     );
   }
 

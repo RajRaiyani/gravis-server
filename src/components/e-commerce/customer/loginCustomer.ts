@@ -5,9 +5,6 @@ import JwtToken from '@/utils/jwtToken.js';
 import bcrypt from 'bcryptjs';
 
 export const ValidationSchema = {
-  headers: z.object({
-    'x-guest-id': z.uuid({ version: 'v7', message: 'Invalid guest ID' }).optional(),
-  }),
   body: z.object({
     email: z.email().toLowerCase(),
     password: z.string().trim().nonempty().max(100),
@@ -21,7 +18,7 @@ export async function Controller(
   db: DatabaseClient
 ) {
   const { email, password } = req.body as z.infer<typeof ValidationSchema.body>;
-  const guest_id = req.headers['x-guest-id'] as string | undefined;
+  const guest_id = req.guest?.id;
 
   const customer = await db.queryOne(
     `SELECT
@@ -61,13 +58,12 @@ export async function Controller(
 
       if (customerCart) {
         // Customer has cart: merge guest items into customer cart
-        await db.query(
-          `INSERT INTO cart_items (cart_id, product_id, quantity)
-           SELECT $1, product_id, quantity FROM cart_items WHERE cart_id = $2
-           ON CONFLICT (cart_id, product_id)
-           DO UPDATE SET quantity = EXCLUDED.quantity, updated_at = NOW()`,
-          //  DO UPDATE SET quantity = EXCLUDED.quantity, updated_at = NOW()`,
-          [customerCart.id, guestCart.id]
+        await db.query(`
+            INSERT INTO cart_items (cart_id, product_id, quantity)
+            SELECT $1, product_id, quantity FROM cart_items WHERE cart_id = $2
+            ON CONFLICT (cart_id, product_id)
+            DO UPDATE SET quantity = EXCLUDED.quantity`,
+        [customerCart.id, guestCart.id]
         );
 
         await db.query('DELETE FROM cart_items WHERE cart_id = $1', [guestCart.id]);

@@ -4,7 +4,7 @@ import z from 'zod';
 
 const jwtSecretSchema = z.string().min(7).max(1024);
 
-const {data: jwtSecret, error, success} = jwtSecretSchema.safeParse(env.jwtSecret);
+const { data: jwtSecret, error, success } = jwtSecretSchema.safeParse(env.jwtSecret);
 
 if (!success) throw new Error(`Invalid ENV options JWT Secret: ${error.message}`);
 
@@ -18,7 +18,7 @@ function decode(token: string): any {
   return payload;
 }
 
-function encode(payload: any, options: SignOptions): string {
+function encode(payload: any, options?: SignOptions): string {
   return jwt.sign(payload, jwtSecret, options as SignOptions);
 }
 

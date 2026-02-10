@@ -1,13 +1,7 @@
-import { z } from 'zod';
 import { Request, Response, NextFunction } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import env from '@/config/env.js';
 
-export const ValidationSchema = {
-  headers: z.object({
-    'x-guest-id': z.string().uuid({ version: 'v7', message: 'Invalid guest ID' }).optional(),
-  }),
-};
 
 export async function Controller(
   req: Request,
@@ -16,7 +10,7 @@ export async function Controller(
   db: DatabaseClient
 ) {
   const customer_id = req.customer?.id;
-  const guest_id = customer_id ? null : req.headers['x-guest-id'] as string | undefined;
+  const guest_id = req.guest?.id;
 
 
   let cart = await db.queryOne(`

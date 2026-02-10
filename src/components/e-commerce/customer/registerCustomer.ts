@@ -12,8 +12,7 @@ export const ValidationSchema = {
     last_name: CustomerSchema.lastName(),
     email: CustomerSchema.email(),
     password: CustomerSchema.password(),
-    phone_number: CustomerSchema.phoneNumber(),
-    guest_cart_id: z.uuid({ version: 'v7', message: 'Invalid guest cart ID' }).optional(),
+    phone_number: CustomerSchema.phoneNumber()
   }),
 };
 
@@ -27,7 +26,7 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const { first_name, last_name, email, password, phone_number, guest_cart_id } =
+  const { first_name, last_name, email, password, phone_number } =
     req.body as z.infer<typeof ValidationSchema.body>;
 
   const existingCustomer = await db.queryOne(
@@ -45,8 +44,7 @@ export async function Controller(
     last_name,
     email,
     password,
-    phone_number: phone_number || null,
-    guest_cart_id: guest_cart_id || null,
+    phone_number: phone_number || null
   };
 
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);

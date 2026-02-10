@@ -2,6 +2,7 @@ import express from 'express';
 import { validate } from '@/utils/validationHelper.js';
 import WithDatabase from '@/utils/withDatabase.js';
 import CustomerPrivateRoute from '@/middleware/e-commerce/customerPrivateRoute.js';
+import ParseToken from '@/middleware/e-commerce/parseToken.js';
 
 import {
   ValidationSchema as registerCustomerValidationSchema,
@@ -58,6 +59,7 @@ router.post(
 
 router.post(
   '/verify-email',
+  ParseToken,
   validate(verifyEmailValidationSchema),
   WithDatabase(verifyEmailController)
 );
@@ -70,6 +72,7 @@ router.post(
 
 router.post(
   '/login',
+  ParseToken,
   validate(loginCustomerValidationSchema),
   WithDatabase(loginCustomerController)
 );
