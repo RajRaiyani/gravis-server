@@ -1,5 +1,7 @@
 -- migrate:up
 
+drop table if exists inquiries;
+
 create table inquiries (
   id uuid not null default uuidv7() constraint pk_inquiries primary key,
   type varchar(100) not null default 'general',
