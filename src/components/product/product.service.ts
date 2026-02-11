@@ -6,10 +6,11 @@ type ListProductsQuery = {
   search?: string;
   offset?: number;
   limit?: number;
+  customer_id?: string;
 }
 
 export async function ListProducts(db: DatabaseClient, query: ListProductsQuery) {
-  const { category_id, search, offset, limit } = query;
+  const { category_id, search, offset, limit, customer_id } = query;
 
   // Build WHERE conditions
   let whereClause = ' WHERE 1=1 ';
@@ -76,12 +77,42 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
     search: search ? `%${search}%` : null,
   });
 
-  return data;
+  if (customer_id && data.length > 0) {
+    const product_ids = data.map((p: any) => p.id);
 
+    const pendingInquiries = await db.queryAll<{
+      product_id: string;
+      inquiry_id: string;
+    }>(
+      `SELECT product_id, id as inquiry_id
+       FROM inquiries
+       WHERE customer_id = $1
+       AND product_id = ANY($2)
+       AND status = 'pending'`,
+      [customer_id, product_ids]
+    );
+
+    const inquiryMap: Record<string, string> = {};
+    pendingInquiries.forEach((inq) => {
+      inquiryMap[inq.product_id] = inq.inquiry_id;
+    });
+
+    data.forEach((product: any) => {
+      if (inquiryMap[product.id]) {
+        product.has_pending_inquiry = true;
+        product.pending_inquiry_id = inquiryMap[product.id];
+      } else {
+        product.has_pending_inquiry = false;
+        product.pending_inquiry_id = null;
+      }
+    });
+  }
+
+  return data;
 }
 
 
-export async function GetProduct(db: DatabaseClient, id: string) {
+export async function GetProduct(db: DatabaseClient, id: string, customer_id?: string) {
 
   const productQuery = `
   SELECT
@@ -133,6 +164,28 @@ export async function GetProduct(db: DatabaseClient, id: string) {
 `;
 
   const product = await db.queryOne(productQuery, [id]);
+
+  if (!product) {
+    return null;
+  }
+
+  if (customer_id) {
+    const pendingInquiry = await db.queryOne<{ id: string }>(
+      `SELECT id FROM inquiries
+       WHERE customer_id = $1
+       AND product_id = $2
+       AND status = 'pending'`,
+      [customer_id, id]
+    );
+
+    if (pendingInquiry) {
+      product.has_pending_inquiry = true;
+      product.pending_inquiry_id = pendingInquiry.id;
+    } else {
+      product.has_pending_inquiry = false;
+      product.pending_inquiry_id = null;
+    }
+  }
 
   return product;
 }

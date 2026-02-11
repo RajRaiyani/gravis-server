@@ -23,6 +23,7 @@ export async function Controller(
   try {
     const { category_id, search, offset, limit } = req.validatedQuery as z.infer<typeof ValidationSchema.query>;
 
+    // Admin view doesn't need inquiry check
     const data = await ListProducts(db, { category_id, search, offset, limit });
 
     return res.status(200).json(data);
@@ -31,4 +32,3 @@ export async function Controller(
     return next(error);
   }
 }
-

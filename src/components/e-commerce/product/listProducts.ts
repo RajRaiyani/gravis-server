@@ -23,7 +23,16 @@ export async function Controller(
   try {
     const { category_id, search, offset, limit } = req.validatedQuery as z.infer<typeof ValidationSchema.query>;
 
-    const data = await ListProducts(db, { category_id, search, offset, limit });
+    // Get customer_id if user is logged in
+    const customer_id = req.customer?.id;
+
+    const data = await ListProducts(db, {
+      category_id,
+      search,
+      offset,
+      limit,
+      customer_id // Pass customer_id to enable inquiry check
+    });
 
     return res.status(200).json(data);
 
@@ -31,4 +40,3 @@ export async function Controller(
     return next(error);
   }
 }
-

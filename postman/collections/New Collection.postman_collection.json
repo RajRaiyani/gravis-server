@@ -107,7 +107,14 @@
               "id": "fd55c6cb-a13a-4678-a781-6fd76113c4a3",
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-guest-id",
+                    "value": "019c1ffe-b07e-71ef-b0e4-9ca345d4717a",
+                    "type": "text",
+                    "uuid": "80bac066-24a1-48e5-a5e6-b689b2ec46b5"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"email\": \"yashchauhan1775@gmail.com\",\n  \"password\": \"yash@op\"\n}",
@@ -139,7 +146,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwMDYzMzI3LCJleHAiOjE3NzA2NjgxMjd9.8yqNzeCu4BTP_JV2oDcwY7b_Glhte3tbIdQHFDK6D88",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwNzI2ODA4LCJleHAiOjE3NzEzMzE2MDh9.uh5-MOZelFthgnaSXvcOhYzz1936qqcUaXTz0MeKaFw",
                     "type": "text",
                     "uuid": "c1495deb-ec7c-4e17-bf63-87f9ee9cb429"
                   }
@@ -662,6 +669,124 @@
             }
           ],
           "id": "943963c9-287f-458d-94f5-0f8200ab317b"
+        },
+        {
+          "name": "inquiry",
+          "item": [
+            {
+              "name": "Product Inquiry",
+              "id": "00f06b9b-ea73-4c31-b92c-887e891c0697",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwNzMzMTg0LCJleHAiOjE3NzEzMzc5ODN9.AxOZKc76dvwrfkqvM9WQ2dSmYFLcL8UmnKdN-jfJG7s",
+                    "type": "text",
+                    "uuid": "beba6f2e-fad1-4dd0-8d6f-39367b2f2a87"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "b6bfb989-f3db-4d04-bc6e-ce67207d2150"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"product\",\n  \"product_id\": \"019c041b-b5b3-7103-8029-79c24266eeda\",\n  \"message\": \"I'm interested in purchasing 50 units. Can you provide a bulk discount?\",\n  \"quantity\": 50\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/inquiry/product",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "inquiry",
+                    "product"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "contact inquiry",
+              "id": "46f5d999-9a2d-45ee-9188-a6df97653ffa",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwNzMzMTg0LCJleHAiOjE3NzEzMzc5ODN9.AxOZKc76dvwrfkqvM9WQ2dSmYFLcL8UmnKdN-jfJG7s",
+                    "type": "text",
+                    "uuid": "10496f44-f82a-466a-9ce1-f9c594debe9e",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\":\"yash\",\n    \"email\":\"yashchauhan1775@gmail.com\",\n    \"phone_number\":\"1234567890\",\n    \"message\":\"contact secction\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/inquiry/contact",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "inquiry",
+                    "contact"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "b200f178-b52b-4e5f-ac87-6eed3d9ee29a"
+        },
+        {
+          "name": "Products",
+          "item": [
+            {
+              "name": "Get product detail",
+              "id": "37c4e391-6c4d-49d5-b04c-10eb2168d1aa",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwNzg1MzYxLCJleHAiOjE3NzEzOTAxNjB9.eRSbSkHf4pC6vrXp5dhMDCJzJvYHqCPa5xfGOhLyarw",
+                    "type": "text",
+                    "uuid": "bfb34528-000d-43b3-96ab-47fdb003f9e9"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/products/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "products",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "9111f801-a903-4f6b-b867-f21258f09a7e"
         }
       ],
       "id": "b1711c8a-ce24-4e90-aabc-5a66d32f5c01"
@@ -680,36 +805,19 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzAwNjQwNDYsImV4cCI6MTc3MDE1MDQ0Nn0.ihuV-3azLcfZ1pqAAx2zFDifTCKJWQ8l7qJc1Ay73zw",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3ODQ3OTksImV4cCI6MTc3MDg3MTE5OX0.K7WezhHOLlZ9IuGJ_NZyYSGkwOU3o512AfjQzNOeLlg",
                     "type": "text",
                     "uuid": "a06c5d16-21d4-4d75-9f4f-640ab0ffaa03"
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/admin/customers?page=1&limit=10&search=john",
+                  "raw": "{{base_url}}/admin/customers",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "admin",
                     "customers"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "uuid": "d8b1d497-584c-42f7-a306-d25887dcd103"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "10",
-                      "uuid": "7f8ba5dc-cba7-4d0f-90df-062c7e71f7b4"
-                    },
-                    {
-                      "key": "search",
-                      "value": "john",
-                      "uuid": "51fb42eb-1a56-44a4-8d81-6c23516ac803"
-                    }
                   ]
                 }
               },
@@ -723,7 +831,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzAwNjI4ODQsImV4cCI6MTc3MDE0OTI4NH0.AfD1h5NOIs_CDjSXtQkrj3dJiTzamey4f5iRau-iqh8",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzAxODg0NzcsImV4cCI6MTc3MDI3NDg3N30.MtzreCWPaLjEZ9hZq--8rDhS_ffIb6LF4oBomwGm7GY",
                     "type": "text",
                     "uuid": "46876be0-c4e3-4dd0-85c7-c7fd346cedbb"
                   }
@@ -818,14 +926,207 @@
           "id": "c075f471-302a-4c20-9e69-c3f00a83324d"
         },
         {
-          "name": "admin login",
-          "id": "493c776e-5dad-410e-a979-ef3ffe597e07",
+          "name": "Files",
+          "item": [
+            {
+              "name": "File upload",
+              "id": "0d9110f4-39a6-474f-9f2b-25bba69e9aa6",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3ODM4NTksImV4cCI6MTc3MDg3MDI1OX0.Ggbsc2U49Po7QE8kFc78lp2EL9loGiushm_QqnxSXOU",
+                    "type": "text",
+                    "uuid": "27c55f7b-3601-445f-836c-1a0c6a8fb904"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "396d1c8a-9ce2-49b2-842b-0209644a5fd3",
+                      "src": [
+                        "/Users/yashchauhan/Downloads/ChatGPT Image Jan 22, 2026, 08_02_26 PM.png"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/files/upload",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "files",
+                    "upload"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "027a62cb-66b8-4bcc-aa48-3f19942cbc0a"
+        },
+        {
+          "name": "inquiry",
+          "item": [
+            {
+              "name": "List inquiry",
+              "id": "a3ce6d48-7e5c-42d4-8019-bd0964940359",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3ODM4NTksImV4cCI6MTc3MDg3MDI1OX0.Ggbsc2U49Po7QE8kFc78lp2EL9loGiushm_QqnxSXOU",
+                    "type": "text",
+                    "uuid": "beba6f2e-fad1-4dd0-8d6f-39367b2f2a87"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "b6bfb989-f3db-4d04-bc6e-ce67207d2150"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"product\",\n  \"product_id\": \"019c041b-b5b3-7103-8029-79c24266eeda\",\n  \"message\": \"I'm interested in purchasing 50 units. Can you provide a bulk discount?\",\n  \"quantity\": 50\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/inquiry",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "inquiry"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "contact inquiry",
+              "id": "ca62a255-c2c0-4426-9394-0636b6bfeb1e",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3ODM4NTksImV4cCI6MTc3MDg3MDI1OX0.Ggbsc2U49Po7QE8kFc78lp2EL9loGiushm_QqnxSXOU",
+                    "type": "text",
+                    "uuid": "10496f44-f82a-466a-9ce1-f9c594debe9e"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/inquiry/{{inquiry_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "inquiry",
+                    "{{inquiry_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update status",
+              "id": "485c30c9-5095-4480-a30a-3af93f808601",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3ODM4NTksImV4cCI6MTc3MDg3MDI1OX0.Ggbsc2U49Po7QE8kFc78lp2EL9loGiushm_QqnxSXOU",
+                    "type": "text",
+                    "uuid": "4b2e5d88-d63a-46fb-b1ec-73a4256a0383"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"in_progress\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/inquiry/{{inquiry_id}}/status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "inquiry",
+                    "{{inquiry_id}}",
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "New Request",
+              "id": "c8279d25-e328-425e-9b23-860faa86420f",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3ODM4NTksImV4cCI6MTc3MDg3MDI1OX0.Ggbsc2U49Po7QE8kFc78lp2EL9loGiushm_QqnxSXOU",
+                    "type": "text",
+                    "uuid": "1037011f-5fc5-4727-a6bf-0ad0298f10f0"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/inquiry/{{inquiry_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "inquiry",
+                    "{{inquiry_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "47a61a64-9be3-455a-a228-15fd6a5fc8cd"
+        },
+        {
+          "name": "Admin login",
+          "id": "7464271a-5f83-4888-8163-8c02483e8413",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email_or_phone_number\": \"1234567890\",\n  \"password\": \"admin@123\"\n}",
+              "raw": "{\n    \"email_or_phone_number\": \"1234567890\",\n    \"password\": \"admin@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -850,6 +1151,154 @@
       "id": "82e37ddf-8363-498a-850b-207bd5844b8e"
     },
     {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get product",
+          "id": "6af362a4-1dd5-4f3b-96e3-0dba4fbf8335",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/e-commerce/products?limit=10&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "e-commerce",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "uuid": "b5279a55-c0c4-408d-ad6a-ddd1f3356875"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "uuid": "ee4bf5df-1a0d-40e3-9ba9-26e44f69dcec"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List products",
+          "id": "898919e6-56d4-417f-a822-6520fe323db3",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3NDc0OTMsImV4cCI6MTc3MDgzMzg5M30.MeDvzhFXBCNusiAmAUaiW-5LJsd42iNNkvnJE6rPE1I",
+                "type": "text",
+                "uuid": "27a732f9-36e6-4ef7-aef6-d2b96d0ead8b"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/product-categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "product-categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products With auth",
+          "id": "ffb225eb-f4c8-4865-828c-8899a44de840",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/e-commerce/products?limit=10&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "e-commerce",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "uuid": "307facd2-738c-4859-8492-23714378272b"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "uuid": "e77ef5f1-1f31-4580-a72e-e1278db8c550"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Product details",
+          "id": "dddd53e4-98df-4a68-bd41-ea635889a2e6",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwNzI2ODA4LCJleHAiOjE3NzEzMzE2MDh9.uh5-MOZelFthgnaSXvcOhYzz1936qqcUaXTz0MeKaFw",
+                "type": "text",
+                "uuid": "19a2a424-a925-4913-88b8-1612d6c0ff66"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/e-commerce/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "e-commerce",
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get product details",
+          "id": "5daaf238-d36c-431c-aca9-05b351236fba",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwNzMzMTg0LCJleHAiOjE3NzEzMzc5ODN9.AxOZKc76dvwrfkqvM9WQ2dSmYFLcL8UmnKdN-jfJG7s",
+                "type": "text",
+                "uuid": "3bcfb27a-9d56-4391-9bc2-7b2f0ef97c2a"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/e-commerce/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "e-commerce",
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "5a87f64b-e83c-4e26-8a0a-12d4b7e3620b"
+    },
+    {
       "name": "base",
       "id": "f5e975d5-897d-4063-b8ca-eed44c46c6b3",
       "request": {
@@ -868,22 +1317,54 @@
       "name": "add to cart",
       "id": "8c73fd47-6f2b-4374-8d6e-c9df2d15f023",
       "request": {
-        "method": "GET",
-        "header": [],
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text",
+            "uuid": "7b9cbe1c-0913-4248-ad52-d33f27f5edc1"
+          },
+          {
+            "key": "x-guest-id",
+            "value": "019c284f-d850-767b-8841-bdff0f89484a",
+            "type": "text",
+            "uuid": "d2f9b6cd-f4c5-49ff-8c5d-aa6afebe70f6",
+            "disabled": true
+          },
+          {
+            "key": "x-guest-id",
+            "value": "019c1ffe-b07e-71ef-b0e4-9ca345d4717a",
+            "type": "text",
+            "uuid": "c746e816-4acd-4784-9ae4-edb69ec9118e",
+            "disabled": true
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3VzdG9tZXJfYXV0aF90b2tlbiIsImN1c3RvbWVyX2lkIjoiMDE5YzFmZmUtYjA3ZS03MWVmLWIwZTQtOWNhMzQ1ZDQ3MTdhIiwiaWF0IjoxNzcwMjIyMTc2LCJleHAiOjE3NzA4MjY5NzV9.L-Pxrin0Y01J6I834pYwo9_y-tx4ZsWdbwzmnx-aaLU",
+            "type": "text",
+            "uuid": "2f8d35b7-e673-4202-b82d-0eac74290252"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"quantity\": 12\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": ""
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "New Request",
-      "id": "2a4f488a-b45d-4be9-a5ee-1ace8a85c1c5",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": ""
+          "raw": "{{base_url}}/e-commerce/cart/{{product_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "e-commerce",
+            "cart",
+            "{{product_id}}"
+          ]
         }
       },
       "response": []
