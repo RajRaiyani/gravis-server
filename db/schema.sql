@@ -1,4 +1,4 @@
-\restrict q2UItJ0oBFjS3wi4C8zGGwd79Kq7SbERU9dlfBbzuUITUOSCeOuGzj7OLrK6s58
+\restrict 8ez4BtNHDpsKks8TwSUh09QUFmDGyU4eA9LCSdBJ0d3SIZcT4wFl3cLzxR8IoDY
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -85,13 +85,14 @@ CREATE TABLE public.files (
 
 CREATE TABLE public.inquiries (
     id uuid DEFAULT uuidv7() NOT NULL,
-    name character varying(255) NOT NULL,
-    phone_number character varying(15) NOT NULL,
-    email character varying(255) NOT NULL,
-    message text NOT NULL,
+    type character varying(100) DEFAULT 'general'::character varying NOT NULL,
+    message text,
+    product_id uuid,
     status character varying(100) DEFAULT 'pending'::character varying NOT NULL,
-    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    meta_data jsonb DEFAULT '{}'::jsonb CONSTRAINT inquiries_metadata_not_null NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    customer_id uuid,
+    updated_at timestamp with time zone
 );
 
 
@@ -348,6 +349,22 @@ ALTER TABLE ONLY public.carts
 
 
 --
+-- Name: inquiries fk_inquiries_customer_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.inquiries
+    ADD CONSTRAINT fk_inquiries_customer_id FOREIGN KEY (customer_id) REFERENCES public.customers(id);
+
+
+--
+-- Name: inquiries fk_inquiries_product_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.inquiries
+    ADD CONSTRAINT fk_inquiries_product_id FOREIGN KEY (product_id) REFERENCES public.products(id);
+
+
+--
 -- Name: product_categories fk_product_categories_image_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -383,7 +400,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict q2UItJ0oBFjS3wi4C8zGGwd79Kq7SbERU9dlfBbzuUITUOSCeOuGzj7OLrK6s58
+\unrestrict 8ez4BtNHDpsKks8TwSUh09QUFmDGyU4eA9LCSdBJ0d3SIZcT4wFl3cLzxR8IoDY
 
 
 --
@@ -397,4 +414,6 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260201191416'),
     ('20260202051143'),
     ('20260203051605'),
-    ('20260205084732');
+    ('20260205084732'),
+    ('20260205135203'),
+    ('20260206184727');

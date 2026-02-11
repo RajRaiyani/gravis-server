@@ -18,7 +18,10 @@ export async function Controller(
   try {
     const { id } = req.params as z.infer<typeof ValidationSchema.params>;
 
-    const product = await GetProduct(db, id);
+    // Get customer_id if user is logged in
+    const customer_id = req.customer?.id;
+
+    const product = await GetProduct(db, id, customer_id);
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -29,4 +32,3 @@ export async function Controller(
     return next(error);
   }
 }
-

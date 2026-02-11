@@ -18,6 +18,7 @@ export async function Controller(
   try {
     const { id } = req.params as z.infer<typeof ValidationSchema.params>;
 
+    // Admin view doesn't need inquiry check
     const product = await GetProduct(db, id);
 
     if (!product) {
@@ -29,4 +30,3 @@ export async function Controller(
     return next(error);
   }
 }
-

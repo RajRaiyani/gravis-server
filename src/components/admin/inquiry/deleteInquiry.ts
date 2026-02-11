@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import { z } from 'zod';
+import { DeleteInquiry, GetInquiry } from '@/components/inquiry/inquiry.service.js';
 
 export const ValidationSchema = {
   params: z.object({
@@ -12,30 +13,26 @@ export async function Controller(
   req: Request,
   res: Response,
   next: NextFunction,
-  db: DatabaseClient,
+  db: DatabaseClient
 ) {
-  try {
-    const { id } = req.params as z.infer<typeof ValidationSchema.params>;
+  const { id } = req.params as z.infer<typeof ValidationSchema.params>;
 
+  try {
     // Check if inquiry exists
-    const existingInquiry = await db.queryOne<{ id: string }>(
-      'SELECT id FROM inquiries WHERE id = $1',
-      [id],
-    );
+    const existingInquiry = await GetInquiry(db, id);
 
     if (!existingInquiry) {
       return res.status(404).json({ message: 'Inquiry not found' });
     }
 
     // Delete inquiry
-    const deletedInquiry = await db.queryOne(
-      'DELETE FROM inquiries WHERE id = $1 RETURNING *',
-      [id],
-    );
+    await DeleteInquiry(db, id);
 
-    return res.status(200).json({ data: deletedInquiry });
+    return res.status(200).json({
+      message: 'Inquiry deleted successfully',
+      inquiry_id: id,
+    });
   } catch (error) {
     return next(error);
   }
 }
-
