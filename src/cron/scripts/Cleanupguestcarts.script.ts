@@ -10,19 +10,19 @@ export default async function cleanupGuestCarts() {
     // Delete cart items from orphaned guest carts older than 30 days
     await db.query(
       `DELETE FROM cart_items
-       WHERE cart_id IN (
-         SELECT id FROM carts
-         WHERE customer_id IS NULL
-         AND created_at < NOW() - INTERVAL '30 days'
-       )`
+      WHERE cart_id IN (
+        SELECT id FROM carts
+        WHERE customer_id IS NULL
+        AND created_at < NOW() - INTERVAL '30 days'
+      )`
     );
 
     // Delete orphaned guest carts older than 30 days
-    const deletedCarts = await db.query(
-      `DELETE FROM carts
-       WHERE customer_id IS NULL
-       AND created_at < NOW() - INTERVAL '30 days'
-       RETURNING id`
+    const deletedCarts = await db.query(`
+      DELETE FROM carts
+      WHERE customer_id IS NULL
+      AND created_at < NOW() - INTERVAL '30 days'
+      RETURNING id`
     );
 
     logger.info(
