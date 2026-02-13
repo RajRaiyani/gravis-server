@@ -3,11 +3,11 @@ import morgan from 'morgan';
 import cors from 'cors';
 import Logger from './service/logger/index.js';
 import errorHandler from './middleware/errorHandler.js';
-import { FlushUnTrackedFilesJob, FlushFilesJob } from './cron/jobs.js';
 
 import env from './config/env.js';
 import adminRoutes from './routes/admin/app.route.js';
 import eCommerceRoutes from './routes/e-commerce/e-commerce.route.js';
+import { FolderBackupJob, PostgresBackupJob, FlushUnTrackedFilesJob, FlushFilesJob } from './cron/jobs.js';
 
 const app = express();
 
@@ -49,6 +49,8 @@ app.use('/files', express.static(env.fileStoragePath));
 app.use(errorHandler);
 
 
+FolderBackupJob.start();
+PostgresBackupJob.start();
 FlushUnTrackedFilesJob.start();
 FlushFilesJob.start();
 
