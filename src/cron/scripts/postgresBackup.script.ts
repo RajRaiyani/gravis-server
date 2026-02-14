@@ -12,7 +12,7 @@ import { s3 } from '@/service/aws/index.js';
 import env from '@/config/env.js';
 import Constants from '@/config/constant.js';
 
-const RETENTION_COUNT = 3;
+const RETENTION_COUNT = 15;
 const BACKUP_BUCKET = env.aws.s3BackupBucket;
 const s3BackupKey = 'gravis/database-backups';
 
@@ -21,13 +21,27 @@ if (!BACKUP_BUCKET) {
 }
 
 
+const IST = 'Asia/Kolkata';
+
 function formatTimestamp(d = new Date()) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  const h = String(d.getHours()).padStart(2, '0');
-  const min = String(d.getMinutes()).padStart(2, '0');
-  const s = String(d.getSeconds()).padStart(2, '0');
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: IST,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(d);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  const y = get('year');
+  const m = get('month');
+  const day = get('day');
+  const h = get('hour');
+  const min = get('minute');
+  const s = get('second');
   return `${y}-${m}-${day}_${h}-${min}-${s}`;
 }
 

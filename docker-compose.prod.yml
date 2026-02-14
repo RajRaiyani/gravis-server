@@ -1,8 +1,18 @@
 services:
+  gravis-admin-client:
+    image: rajraiyani/gravis-admin-client:latest
+    container_name: gravis-admin-client
+    pull_policy: always
+    ports:
+      - "5173:80"
+
   gravis-server:
     image: rajraiyani/gravis-server:latest
     pull_policy: always
     container_name: gravis-server
+    networks:
+      - main
+      - gravis
     ports:
       - "3007:3007"
     env_file:
@@ -13,3 +23,9 @@ services:
       - ./logs:/app/logs
       - ./tmp:/app/tmp
     command: sh -c "npx dbmate up && npm run start"
+
+networks:
+  main:
+    external: true
+  gravis:
+    external: true
