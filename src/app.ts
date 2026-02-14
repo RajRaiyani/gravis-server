@@ -7,7 +7,7 @@ import errorHandler from './middleware/errorHandler.js';
 import env from './config/env.js';
 import adminRoutes from './routes/admin/app.route.js';
 import eCommerceRoutes from './routes/e-commerce/e-commerce.route.js';
-import { FolderBackupJob, PostgresBackupJob, FlushUnTrackedFilesJob, FlushFilesJob } from './cron/jobs.js';
+import { BackupDataJob, PostgresBackupJob, FlushUnTrackedFilesJob, FlushFilesJob } from './cron/jobs.js';
 
 const app = express();
 
@@ -49,7 +49,7 @@ app.use('/files', express.static(env.fileStoragePath));
 app.use(errorHandler);
 
 
-FolderBackupJob.start();
+BackupDataJob.start();
 PostgresBackupJob.start();
 FlushUnTrackedFilesJob.start();
 FlushFilesJob.start();

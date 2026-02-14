@@ -1,4 +1,3 @@
-
 import { S3Client } from '@aws-sdk/client-s3';
 import z from 'zod';
 import env from '@/config/env.js';
@@ -10,7 +9,7 @@ const awsSchema = z.object({
   secretAccessKey: z.string().min(3).max(255),
 });
 
-const {data: awsOptions, error, success} = awsSchema.safeParse({
+const { data: awsOptions, error, success } = awsSchema.safeParse({
   region: env.aws.region,
   accessKeyId: env.aws.accessKeyId,
   secretAccessKey: env.aws.secretAccessKey,
@@ -26,3 +25,4 @@ export const s3 = new S3Client({
     secretAccessKey: awsOptions.secretAccessKey,
   },
 });
+
