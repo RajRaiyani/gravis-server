@@ -1369,6 +1369,33 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Dashboard",
+      "id": "15dad381-e713-4483-bd7a-804e3f1e4718",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEyMjA0ODcsImV4cCI6MTc3MTMwNjg4N30.5X-QufN5SOcKdNTFy-tUEoaogmnQnWhlVgr3YQu3Bls",
+            "type": "text",
+            "uuid": "e53ee1ec-59aa-4d78-ac5e-815c3b683809"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/admin/dashboard/stats",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "admin",
+            "dashboard",
+            "stats"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }
