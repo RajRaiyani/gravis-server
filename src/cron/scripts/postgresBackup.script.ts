@@ -1,46 +1,49 @@
 import fs from 'fs';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
+import path from 'path';
 import {
-  S3Client,
   PutObjectCommand,
   ListObjectsV2Command,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
+import { s3 } from '@/service/aws/index.js';
 
 import env from '@/config/env.js';
+import Constants from '@/config/constant.js';
 
-const RETENTION_COUNT = 3;
-const s3 = new S3Client({
-  region: env.aws.region!,
-  credentials: {
-    accessKeyId: env.aws.accessKeyId!,
-    secretAccessKey: env.aws.secretAccessKey!,
-  },
-});
+const RETENTION_COUNT = 15;
+const BACKUP_BUCKET = env.aws.s3BackupBucket;
+const s3BackupKey = 'gravis/database-backups';
+
+if (!BACKUP_BUCKET) {
+  throw new Error('AWS_S3_BACKUP_BUCKET is not set in env');
+}
+
+
+const IST = 'Asia/Kolkata';
 
 function formatTimestamp(d = new Date()) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  const h = String(d.getHours()).padStart(2, '0');
-  const min = String(d.getMinutes()).padStart(2, '0');
-  const s = String(d.getSeconds()).padStart(2, '0');
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: IST,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(d);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  const y = get('year');
+  const m = get('month');
+  const day = get('day');
+  const h = get('hour');
+  const min = get('minute');
+  const s = get('second');
   return `${y}-${m}-${day}_${h}-${min}-${s}`;
 }
-
-function formatLogTime(d = new Date()) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  const h = String(d.getHours()).padStart(2, '0');
-  const min = String(d.getMinutes()).padStart(2, '0');
-  const s = String(d.getSeconds()).padStart(2, '0');
-  return `${y}-${m}-${day} ${h}:${min}:${s}`;
-}
-
-const log = (msg: string) =>
-  console.log(`[${formatLogTime()}] ${msg}`);
 
 function execPromise(cmd: string) {
   return new Promise<void>((resolve, reject) => {
@@ -52,7 +55,7 @@ async function uploadToS3(filePath: string, key: string) {
   const stream = fs.createReadStream(filePath);
   await s3.send(
     new PutObjectCommand({
-      Bucket: env.aws.s3Bucket!,
+      Bucket: BACKUP_BUCKET,
       Key: key,
       Body: stream,
     })
@@ -62,15 +65,15 @@ async function uploadToS3(filePath: string, key: string) {
 async function applyRetention(prefix: string) {
   const res = await s3.send(
     new ListObjectsV2Command({
-      Bucket: env.aws.s3Bucket!,
+      Bucket: BACKUP_BUCKET,
       Prefix: prefix,
     })
   );
 
   const files = (res.Contents || []).sort(
     (a, b) =>
-      new Date(a.LastModified!).getTime() -
-      new Date(b.LastModified!).getTime()
+      new Date(a.LastModified).getTime() -
+      new Date(b.LastModified).getTime()
   );
 
   const oldFiles = files.slice(0, Math.max(0, files.length - RETENTION_COUNT));
@@ -78,21 +81,20 @@ async function applyRetention(prefix: string) {
   for (const f of oldFiles) {
     await s3.send(
       new DeleteObjectCommand({
-        Bucket: env.aws.s3Bucket!,
-        Key: f.Key!,
+        Bucket: BACKUP_BUCKET,
+        Key: f.Key,
       })
     );
   }
 }
 export async function task() {
   const date = formatTimestamp();
-  const tmpFile = `/tmp/${date}.sql`;
+  const tmpFile = path.join(Constants.temporaryFileStoragePath, `${date}.sql`);
 
   const { host, port, user, password, database } = env.database;
-  const folder = `postgres/${database}/`;
-  const key = `${folder}${date}.sql`;
+  const folder = path.join(s3BackupKey, database);
+  const key = path.join(folder, `${date}.sql`);
 
-  log('PG BACKUP STARTED');
 
   await execPromise(
     `PGPASSWORD=${password} pg_dump -h ${host} -p ${port} -U ${user} ${database} > ${tmpFile}`
@@ -102,7 +104,6 @@ export async function task() {
   fs.unlinkSync(tmpFile);
   await applyRetention(folder);
 
-  log('PG BACKUP COMPLETED');
 }
 
 // AUTO RUN WHEN EXECUTED DIRECTLY

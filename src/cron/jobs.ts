@@ -1,10 +1,10 @@
 import cron from 'node-cron';
 import env from '@/config/env.js';
 
-import { task as folderBackupTask } from './scripts/folderBackup.script.js';
 import { task as postgresBackupTask } from './scripts/postgresBackup.script.js';
 import { task as flushUnTrackedFilesTask } from './scripts/flushUnTrackedFiles.script.js';
 import { task as flushFilesTask } from './scripts/flushFiles.script.js';
+import { task as backupDataTask } from './scripts/backupData.js';
 
 const isProduction = env.env === 'prod';
 
@@ -30,15 +30,16 @@ export const FlushUnTrackedFilesJob = isProduction ?
 
 // Run at 2:00 AM every 3 days
 export const FlushFilesJob = isProduction ?
-  cron.createTask('0 2 */3 * *', './scripts/flushFiles.script.js', { timezone: 'Asia/Kolkata', }) :
-  cron.createTask('0 2 */3 * *', flushFilesTask, { timezone: 'Asia/Kolkata', });
+  cron.createTask('0 1 */3 * *', './scripts/flushFiles.script.js', { timezone: 'Asia/Kolkata', }) :
+  cron.createTask('0 1 */3 * *', flushFilesTask, { timezone: 'Asia/Kolkata', });
 
 // Daily 1:30 AM
-export const FolderBackupJob = isProduction?
-  cron.createTask('30 1 * * *', './scripts/folderBackup.script.js', { timezone: 'Asia/Kolkata', }):
-  cron.createTask('30 1 * * *', folderBackupTask, { timezone: 'Asia/Kolkata', });
+export const BackupDataJob = isProduction?
+  cron.createTask('0 3 */2 * *', './scripts/backupData.js', { timezone: 'Asia/Kolkata', }):
+  cron.createTask('0 3 */2 * *', backupDataTask, { timezone: 'Asia/Kolkata', });
 
 // Daily 2:00 AM
 export const PostgresBackupJob = isProduction ?
   cron.createTask('0 2 * * *', './scripts/postgresBackup.script.js', { timezone: 'Asia/Kolkata', }) :
   cron.createTask('0 2 * * *', postgresBackupTask, { timezone: 'Asia/Kolkata', });
+

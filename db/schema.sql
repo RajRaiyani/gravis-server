@@ -1,4 +1,4 @@
-\restrict zyVcox93q4KPmR5lU6Md0FSexbjMbE6TVVdHjJRTZ2zYxEr8RexUQ4UTH22hQQF
+\restrict LgbMPkmMFiwhZ4WKl25BJbNDSfZ8UElpHHk3dVRio7elerhdAOcijdakNMTOXKI
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -400,7 +400,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict zyVcox93q4KPmR5lU6Md0FSexbjMbE6TVVdHjJRTZ2zYxEr8RexUQ4UTH22hQQF
+\unrestrict LgbMPkmMFiwhZ4WKl25BJbNDSfZ8UElpHHk3dVRio7elerhdAOcijdakNMTOXKI
 
 
 --
