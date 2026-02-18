@@ -7,10 +7,11 @@ type ListProductsQuery = {
   offset?: number;
   limit?: number;
   customer_id?: string;
-}
+  only_featured?: boolean;
+};
 
 export async function ListProducts(db: DatabaseClient, query: ListProductsQuery) {
-  const { category_id, search, offset, limit, customer_id } = query;
+  const { category_id, search, offset, limit, customer_id, only_featured } = query;
 
   // Build WHERE conditions
   let whereClause = ' WHERE 1=1 ';
@@ -18,6 +19,8 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
   if (category_id) whereClause += ' AND p.category_id = $category_id';
 
   if (search) whereClause += ' AND (p.name ILIKE LOWER($search)) ';
+
+  if (only_featured) whereClause += ' AND p.is_featured = true';
 
 
   const listQuery = `

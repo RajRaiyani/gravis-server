@@ -9,6 +9,11 @@ import {
 } from '@/components/e-commerce/product/listProducts.js';
 
 import {
+  ValidationSchema as listFeaturedProductsValidationSchema,
+  Controller as listFeaturedProductsController,
+} from '@/components/e-commerce/product/listFeaturedProducts.js';
+
+import {
   ValidationSchema as getProductValidationSchema,
   Controller as getProductController,
 } from '@/components/e-commerce/product/getProduct.js';
@@ -21,6 +26,14 @@ router
     ParseToken,
     validate(listProductsValidationSchema),
     WithDatabase(listProductsController)
+  );
+
+router
+  .route('/featured')
+  .get(
+    ParseToken,
+    validate(listFeaturedProductsValidationSchema),
+    WithDatabase(listFeaturedProductsController),
   );
 
 router

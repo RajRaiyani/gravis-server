@@ -1359,8 +1359,7 @@
                   "variable": [
                     {
                       "key": "id",
-                      "value": "019c6f67-3f73-7e1e-955f-2aaa75971526",
-                      "uuid": "07a1808b-0da7-4e07-bf6c-32e4e18938ba"
+                      "value": "019c6f67-3f73-7e1e-955f-2aaa75971526"
                     }
                   ]
                 }
@@ -1460,8 +1459,7 @@
                   "variable": [
                     {
                       "key": "id",
-                      "value": "019c6f5b-ce88-724b-bd16-c60128fb87e9",
-                      "uuid": "ae6b4521-2711-4152-a141-a907de7ce2d4"
+                      "value": "019c6f5b-ce88-724b-bd16-c60128fb87e9"
                     }
                   ]
                 }
@@ -1503,8 +1501,7 @@
                   "variable": [
                     {
                       "key": "id",
-                      "value": "019c6f5b-ce88-724b-bd16-c60128fb87e9",
-                      "uuid": "c13392a1-f2ef-43d8-93a5-e90aca42c75d"
+                      "value": "019c6f5b-ce88-724b-bd16-c60128fb87e9"
                     }
                   ]
                 }
@@ -1668,6 +1665,18 @@
             "users",
             "login"
           ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "e387a14a-d118-4f0c-b063-0c7012202d6b",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
         }
       },
       "response": []
