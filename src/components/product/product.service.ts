@@ -33,6 +33,9 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
       p.created_at,
       p.updated_at,
       p.points,
+      p.product_label,
+      p.warranty_label,
+      p.is_featured,
       json_build_object(
         'id', pc.id,
         'name', pc.name,
@@ -129,6 +132,9 @@ export async function GetProduct(db: DatabaseClient, id: string, customer_id?: s
     p.updated_at,
     p.points,
     p.technical_details,
+    p.product_label,
+    p.warranty_label,
+    p.is_featured,
     json_build_object(
       'id', pc.id,
       'name', pc.name,

@@ -787,6 +787,31 @@
             }
           ],
           "id": "9111f801-a903-4f6b-b867-f21258f09a7e"
+        },
+        {
+          "name": "Producut Cetegory",
+          "item": [
+            {
+              "name": "Get category",
+              "id": "d32a3364-c478-4f69-9c2d-18de3388dd0e",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/product-categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "product-categories"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "a6f89fbc-0d7c-42ec-aed4-b8996814128c"
         }
       ],
       "id": "b1711c8a-ce24-4e90-aabc-5a66d32f5c01"
@@ -936,7 +961,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwM2Y3LWExMzItNzhkYS04M2ViLTI1MjMxNzcyMmZlZSIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzA3ODM4NTksImV4cCI6MTc3MDg3MDI1OX0.Ggbsc2U49Po7QE8kFc78lp2EL9loGiushm_QqnxSXOU",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwNTJhLTY1ZTctNzhkYi05ZThhLWEyMzZiYWRiMDMxMCIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEzOTQ0OTAsImV4cCI6MTc3MTQ4MDg5MH0.BasAZcOTdF59HCPqbRvOwoWy45jd1Ngz9zNs6NZ_2XU",
                     "type": "text",
                     "uuid": "27c55f7b-3601-445f-836c-1a0c6a8fb904"
                   }
@@ -949,7 +974,7 @@
                       "type": "file",
                       "uuid": "396d1c8a-9ce2-49b2-842b-0209644a5fd3",
                       "src": [
-                        "/Users/yashchauhan/Downloads/ChatGPT Image Jan 22, 2026, 08_02_26 PM.png"
+                        "/Users/yashchauhan/Downloads/signature.png"
                       ]
                     }
                   ]
@@ -1263,9 +1288,231 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "Create product",
+              "id": "bd13739a-4177-44b3-8e96-054df80cf049",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwNTJhLTY1ZTctNzhkYi05ZThhLWEyMzZiYWRiMDMxMCIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEzOTQ0OTAsImV4cCI6MTc3MTQ4MDg5MH0.BasAZcOTdF59HCPqbRvOwoWy45jd1Ngz9zNs6NZ_2XU",
+                    "type": "text",
+                    "uuid": "c7349c0d-a99f-4d00-bfce-ce6fac08f815"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category_id\": \"019c6f5b-ce88-724b-bd16-c60128fb87e9\",\n  \"name\": \"MacBook Pro 16-inch M3 Max\",\n  \"description\": \"Ultimate professional laptop with M3 Max chip, 48GB RAM, and 2TB storage\",\n  \"tags\": [\"laptop\", \"apple\", \"professional\", \"high-performance\"],\n  \"points\": [\n    \"M3 Max chip with 14-core CPU\",\n    \"48GB Unified Memory\",\n    \"2TB SSD Storage\",\n    \"16.2-inch Liquid Retina XDR display\",\n    \"Up to 22 hours battery life\"\n  ],\n  \"technical_details\": [\n    {\n      \"label\": \"Processor\",\n      \"value\": \"Apple M3 Max 14-core\"\n    },\n    {\n      \"label\": \"RAM\",\n      \"value\": \"48GB Unified Memory\"\n    },\n    {\n      \"label\": \"Storage\",\n      \"value\": \"2TB SSD\"\n    },\n    {\n      \"label\": \"Display\",\n      \"value\": \"16.2-inch Liquid Retina XDR\"\n    },\n    {\n      \"label\": \"Graphics\",\n      \"value\": \"30-core GPU\"\n    }\n  ],\n  \"metadata\": {\n    \"brand\": \"Apple\",\n    \"model_year\": \"2024\",\n    \"color\": \"Space Black\"\n  },\n  \"sale_price\": 399999.00,\n  \"image_id\": \"019c6f58-09a5-71bf-bfcf-c5fbe6b942bd\",\n  \"product_label\": \"Best Seller\",\n  \"warranty_label\": \"2 Years International Warranty + 1 Year Extended\",\n  \"is_featured\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/products",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update product",
+              "id": "f1cebad4-c507-4d64-815d-53099a36e2b3",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwNTJhLTY1ZTctNzhkYi05ZThhLWEyMzZiYWRiMDMxMCIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEzOTQ0OTAsImV4cCI6MTc3MTQ4MDg5MH0.BasAZcOTdF59HCPqbRvOwoWy45jd1Ngz9zNs6NZ_2XU",
+                    "type": "text",
+                    "uuid": "e735060f-01b5-455d-8a46-a6b89e1905de"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category_id\": \"019c6f5b-ce88-724b-bd16-c60128fb87e9\",\n  \"name\": \"MacBook Pro 16-inch M3 Max\",\n  \"description\": \"Updated description\",\n  \"tags\": [\"laptop\", \"apple\", \"professional\"],\n  \"points\": [\"Updated point 1\", \"Updated point 2\"],\n  \"technical_details\": [\n    {\n      \"label\": \"Processor\",\n      \"value\": \"Apple M3 Max 16-core\"\n    }\n  ],\n  \"metadata\": {},\n  \"sale_price\": 430000.00,\n  \"image_id\": \"019c6f58-09a5-71bf-bfcf-c5fbe6b942bd\",\n  \"product_label\": \"Top Rated\",\n  \"warranty_label\": \"3 Years Premium Warranty\",\n  \"is_featured\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/products/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "products",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "019c6f67-3f73-7e1e-955f-2aaa75971526",
+                      "uuid": "07a1808b-0da7-4e07-bf6c-32e4e18938ba"
+                    }
+                  ]
+                }
+              },
+              "response": []
             }
           ],
           "id": "5a87f64b-e83c-4e26-8a0a-12d4b7e3620b"
+        },
+        {
+          "name": "Product Cetegory",
+          "item": [
+            {
+              "name": "Add new category",
+              "id": "f1afbb80-d013-4b79-aab5-8eaba9ee42a1",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwNTJhLTY1ZTctNzhkYi05ZThhLWEyMzZiYWRiMDMxMCIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEzOTQ0OTAsImV4cCI6MTc3MTQ4MDg5MH0.BasAZcOTdF59HCPqbRvOwoWy45jd1Ngz9zNs6NZ_2XU",
+                    "type": "text",
+                    "uuid": "6332c3e8-33bb-4954-adea-06f0945482a7"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Premium Laptops\",\n  \"description\": \"High-end laptops for professionals\",\n  \"image_id\": \"019c6f58-09a5-71bf-bfcf-c5fbe6b942bd\",\n  \"banner_image_id\": \"019c6f58-09a5-71bf-bfcf-c5fbe6b942bd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/product-categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "product-categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List category",
+              "id": "b32a1ba2-5e11-4b3c-bd15-a8c53b00bcf2",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwNTJhLTY1ZTctNzhkYi05ZThhLWEyMzZiYWRiMDMxMCIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEzOTQ0OTAsImV4cCI6MTc3MTQ4MDg5MH0.BasAZcOTdF59HCPqbRvOwoWy45jd1Ngz9zNs6NZ_2XU",
+                    "type": "text",
+                    "uuid": "2025810c-57cf-4d60-87dd-06b4533cf3c4"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/product-categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "product-categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get category",
+              "id": "141c4a55-a9d1-42a4-a735-4eca11f25eae",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwNTJhLTY1ZTctNzhkYi05ZThhLWEyMzZiYWRiMDMxMCIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEzOTQ0OTAsImV4cCI6MTc3MTQ4MDg5MH0.BasAZcOTdF59HCPqbRvOwoWy45jd1Ngz9zNs6NZ_2XU",
+                    "type": "text",
+                    "uuid": "c8fd04da-6870-4373-a72e-12a39ee6fc11"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/product-categories/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "product-categories",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "019c6f5b-ce88-724b-bd16-c60128fb87e9",
+                      "uuid": "ae6b4521-2711-4152-a141-a907de7ce2d4"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update category",
+              "id": "92c207b2-dbb5-4279-9f5b-e07229804746",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW5fYWNjZXNzX3Rva2VuIiwidXNlcl9pZCI6IjAxOWMwNTJhLTY1ZTctNzhkYi05ZThhLWEyMzZiYWRiMDMxMCIsImlzX2FkbWluIjp0cnVlLCJpYXQiOjE3NzEzOTQ0OTAsImV4cCI6MTc3MTQ4MDg5MH0.BasAZcOTdF59HCPqbRvOwoWy45jd1Ngz9zNs6NZ_2XU",
+                    "type": "text",
+                    "uuid": "a838b8ff-87cf-47e3-8d1c-59064e91f2a1"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Premium Laptops Updated\",\n  \"description\": \"Updated description\",\n  \"image_id\": \"019c6f58-09a5-71bf-bfcf-c5fbe6b942bd\",\n  \"banner_image_id\": \"019c6f58-09a5-71bf-bfcf-c5fbe6b942bd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/product-categories/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "product-categories",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "019c6f5b-ce88-724b-bd16-c60128fb87e9",
+                      "uuid": "c13392a1-f2ef-43d8-93a5-e90aca42c75d"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "dfd53628-d919-496a-97ae-fdc66bf4f938"
         },
         {
           "name": "Admin login",
@@ -1401,11 +1648,11 @@
       "name": "New Request",
       "id": "befe3274-2215-4f01-b24e-e89b65bf312f",
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"email\": \"rraiyani62@gmail.com\"\n}",
+          "raw": "// {\n//     \"email\": \"rraiyani62@gmail.com\",\n//     \"password\": \"Admin@123\"\n// }\n\n{\n    \"email\": \"rpraiyani7@gmail.com\",\n    \"password\": \"admin@123\"\n}",
           "options": {
             "raw": {
               "language": "json"

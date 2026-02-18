@@ -35,6 +35,9 @@ export const ValidationSchema = {
       .min(0, 'Sale price must be greater than or equal to 0').max(100000000, 'Sale price must be less than 100000000 rupees')
       .transform(val => Math.round(val*100)),
     image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }).optional(),
+    product_label: z.string().trim().max(100, 'Product label must be less than 100 characters').optional(),
+    warranty_label: z.string().trim().max(255, 'Warranty label must be less than 255 characters').optional(),
+    is_featured: z.boolean().default(false),
   }),
 };
 
@@ -55,6 +58,9 @@ export async function Controller(
     image_id,
     points,
     technical_details,
+    product_label,
+    warranty_label,
+    is_featured,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   try {
@@ -105,8 +111,11 @@ export async function Controller(
         sale_price_in_paisa = $6,
         points = $7,
         technical_details = $8,
+        product_label = $9,
+        warranty_label = $10,
+        is_featured = $11,
         updated_at = now()
-      WHERE id = $9
+      WHERE id = $12
        RETURNING *`,
       [
         category_id,
@@ -117,6 +126,9 @@ export async function Controller(
         sale_price,
         points || [],
         technical_details || [],
+        product_label || null,
+        warranty_label || null,
+        is_featured,
         id,
       ],
     );

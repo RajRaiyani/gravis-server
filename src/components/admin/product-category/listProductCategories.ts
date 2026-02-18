@@ -19,9 +19,15 @@ export async function Controller(
         'id', f.id,
         'key', f.key,
         'url', ('${env.fileStorageEndpoint}/' || f.key)
-      ) as image
+      ) as image,
+      json_build_object(
+        'id', fb.id,
+        'key', fb.key,
+        'url', ('${env.fileStorageEndpoint}/' || fb.key)
+      ) as banner_image
     FROM product_categories pc
     LEFT JOIN files f ON pc.image_id = f.id
+    LEFT JOIN files fb ON pc.banner_image_id = fb.id
   `;
 
   const data = await db.queryAll(listQuery);

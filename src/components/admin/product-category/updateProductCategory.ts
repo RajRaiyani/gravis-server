@@ -19,6 +19,7 @@ export const ValidationSchema = {
       .trim()
       .max(500, 'Description must be less than 500 characters'),
     image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }),
+    banner_image_id: z.uuid({ version: 'v7', message: 'Invalid banner image ID' }).optional(),
   }),
 };
 
@@ -29,7 +30,7 @@ export async function Controller(
   db: DatabaseClient,
 ) {
   const { id } = req.params as z.infer<typeof ValidationSchema.params>;
-  const { name, description, image_id } = req.body as z.infer<
+  const { name, description, image_id, banner_image_id } = req.body as z.infer<
     typeof ValidationSchema.body
   >;
 
@@ -38,7 +39,8 @@ export async function Controller(
       id: string;
       name: string;
       image_id: string | null;
-    }>('SELECT id, name, image_id FROM product_categories WHERE id = $1', [id]);
+      banner_image_id: string | null;
+    }>('SELECT id, name, image_id, banner_image_id FROM product_categories WHERE id = $1', [id]);
 
     if (!existingCategory) {
       return res.status(404).json({ message: 'Product category not found' });
@@ -59,8 +61,8 @@ export async function Controller(
     await db.query('BEGIN');
 
     const updatedCategory = await db.queryOne(
-      'UPDATE product_categories SET name = $1, description = $2, image_id = $3 WHERE id = $4 RETURNING *',
-      [name, description, image_id, id],
+      'UPDATE product_categories SET name = $1, description = $2, image_id = $3, banner_image_id = $4 WHERE id = $5 RETURNING *',
+      [name, description, image_id, banner_image_id || null, id],
     );
 
     // Mark the new image as saved
@@ -69,6 +71,15 @@ export async function Controller(
     // If image has changed, optionally mark the old image as deleted
     if (existingCategory.image_id && existingCategory.image_id !== image_id) {
       await DeleteFile(db, existingCategory.image_id);
+    }
+
+    // Handle banner image changes
+    if (banner_image_id) {
+      await SaveFile(db, banner_image_id);
+    }
+    
+    if (existingCategory.banner_image_id && existingCategory.banner_image_id !== banner_image_id) {
+      await DeleteFile(db, existingCategory.banner_image_id);
     }
 
     await db.query('COMMIT');

@@ -29,6 +29,9 @@ export const ValidationSchema = {
       .min(0, 'Sale price must be greater than or equal to 0')
       .max(100000000, 'Sale price must be less than 100000000 rupees').transform(val => Math.round(val*100)),
     image_id: z.uuid({ version: 'v7', message: 'Invalid image ID' }),
+    product_label: z.string().trim().max(100, 'Product label must be less than 100 characters').optional(),
+    warranty_label: z.string().trim().max(255, 'Warranty label must be less than 255 characters').optional(),
+    is_featured: z.boolean().default(false),
   }),
 };
 
@@ -48,6 +51,9 @@ export async function Controller(
     image_id,
     points,
     technical_details,
+    product_label,
+    warranty_label,
+    is_featured,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   // Check if category exists
@@ -77,8 +83,8 @@ export async function Controller(
 
     // Create product
     const newProduct = await db.queryOne(
-      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price_in_paisa, points, technical_details)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price_in_paisa, points, technical_details, product_label, warranty_label, is_featured)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
       [
         category_id,
         name,
@@ -88,6 +94,9 @@ export async function Controller(
         sale_price,
         points || [],
         technical_details || [],
+        product_label || null,
+        warranty_label || null,
+        is_featured,
       ],
     );
 
