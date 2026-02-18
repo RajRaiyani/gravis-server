@@ -1396,6 +1396,34 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "befe3274-2215-4f01-b24e-e89b65bf312f",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"rraiyani62@gmail.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "login"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }
