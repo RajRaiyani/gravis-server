@@ -1804,6 +1804,229 @@
           "id": "74cfce0f-79d0-4150-a7dc-04a9fe9e6d46"
         },
         {
+          "name": "Product filter option mapping",
+          "item": [
+            {
+              "name": "1. List product categories",
+              "id": "6b561455-b050-4704-89c0-c5c6af66f7f3",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/product-categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "product-categories"
+                  ]
+                },
+                "description": "Get category_id for creating a product and for listing filters. Pick an id and set collection variable category_id."
+              },
+              "response": []
+            },
+            {
+              "name": "2. List category filters",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "4e770c9f-48a3-4a27-85a7-147185b492f7",
+                    "exec": [
+                      "const filters = pm.response.json();",
+                      "if (Array.isArray(filters) && filters[0] && Array.isArray(filters[0].options)) {",
+                      "  const opts = filters[0].options.filter(o => o && o.id);",
+                      "  if (opts[0]) pm.collectionVariables.set('filter_option_id_1', opts[0].id);",
+                      "  if (opts[1]) pm.collectionVariables.set('filter_option_id_2', opts[1].id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "88f9b0fc-bdb2-440d-a33d-34d7322b38ad",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "8bc8f1fc-41f8-4a7d-b203-18eb33f3fcc0",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/filters?category_id={{category_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters"
+                  ],
+                  "query": [
+                    {
+                      "key": "category_id",
+                      "value": "{{category_id}}",
+                      "uuid": "07a70b81-5cd1-4fc9-a378-1b877c88c70e"
+                    }
+                  ]
+                },
+                "description": "Get filters and options for the product category. Option ids from here go into filter_option_ids when creating/updating a product. Script saves first two option ids to filter_option_id_1 and filter_option_id_2."
+              },
+              "response": []
+            },
+            {
+              "name": "3. Create product with attribute mapping",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "b12e4ef4-0f1d-43c1-b58a-96dc1195f0c6",
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "  const json = pm.response.json();",
+                      "  if (json.id) pm.collectionVariables.set('product_id', json.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "8c4aabb0-59d2-4286-a9c4-4f1f369131cc",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "cc899c94-7908-458f-acbf-1586e85633bc",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"name\": \"Sample product with attributes\",\n  \"description\": \"Product description for testing attribute mapping.\",\n  \"tags\": [],\n  \"metadata\": {},\n  \"points\": [],\n  \"technical_details\": [],\n  \"sale_price\": 99900,\n  \"image_id\": \"{{image_id}}\",\n  \"is_featured\": false,\n  \"filter_option_ids\": [\"{{filter_option_id_1}}\", \"{{filter_option_id_2}}\"]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/products",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "products"
+                  ]
+                },
+                "description": "Create product. filter_option_ids must be option UUIDs from the same category (from List category filters). Response includes filter_options with saved mappings. product_id is saved for next requests."
+              },
+              "response": []
+            },
+            {
+              "name": "4. Get product (see filter_options)",
+              "id": "1d3ae709-222b-4de2-9266-b0df7182fe3d",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/products/{{product_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "products",
+                    "{{product_id}}"
+                  ]
+                },
+                "description": "Product response includes filter_options: [{ filter_option_id, filter_id, filter_name, value }] for details view and edit pre-fill."
+              },
+              "response": []
+            },
+            {
+              "name": "5. Update product attribute mapping",
+              "id": "ea6716d1-6086-4504-a831-3c26b19f15cb",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"name\": \"Sample product with attributes\",\n  \"description\": \"Product description for testing attribute mapping.\",\n  \"tags\": [],\n  \"metadata\": {},\n  \"points\": [],\n  \"technical_details\": [],\n  \"sale_price\": 99900,\n  \"image_id\": \"{{image_id}}\",\n  \"is_featured\": false,\n  \"filter_option_ids\": [\"{{filter_option_id_1}}\"]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/products/{{product_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "products",
+                    "{{product_id}}"
+                  ]
+                },
+                "description": "Update product. filter_option_ids replace existing mappings; use option UUIDs from the product's category. Response includes updated filter_options."
+              },
+              "response": []
+            }
+          ],
+          "id": "d9d1d9d7-8e47-4ee8-8943-29e511c2967d"
+        },
+        {
           "name": "Admin login",
           "id": "7464271a-5f83-4888-8163-8c02483e8413",
           "request": {
@@ -1980,6 +2203,23 @@
         }
       },
       "response": []
+    }
+  ],
+  "variable": [
+    {
+      "id": "8460f670-549f-446a-a6aa-42970f74212f",
+      "key": "filter_option_id_1",
+      "value": ""
+    },
+    {
+      "id": "22eb082f-2966-49d4-8faf-bb3e21460938",
+      "key": "filter_option_id_2",
+      "value": ""
+    },
+    {
+      "id": "cdfe35e7-2073-42a0-9a89-5c98c06d079a",
+      "key": "product_id",
+      "value": ""
     }
   ]
 }

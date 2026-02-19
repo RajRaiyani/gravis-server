@@ -1,5 +1,6 @@
 import { DatabaseClient } from '@/service/database/index.js';
 import env from '@/config/env.js';
+import { listProductFilterOptionMappings } from '@/components/filter/filter.service.js';
 
 type ListProductsQuery = {
   category_id?: string;
@@ -219,6 +220,9 @@ export async function GetProduct(db: DatabaseClient, id: string, customer_id?: s
       product.pending_inquiry_id = null;
     }
   }
+
+  const filterOptions = await listProductFilterOptionMappings(db, id);
+  product.filter_options = filterOptions;
 
   return product;
 }

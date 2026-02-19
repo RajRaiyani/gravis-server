@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import { z } from 'zod';
 import { SaveFile } from '@/components/file/file.service.js';
+import { syncProductFilterOptionMappings, listProductFilterOptionMappings } from '@/components/filter/filter.service.js';
 
 export const ValidationSchema = {
   body: z.object({
@@ -32,6 +33,7 @@ export const ValidationSchema = {
     product_label: z.string().trim().max(100, 'Product label must be less than 100 characters').optional(),
     warranty_label: z.string().trim().max(255, 'Warranty label must be less than 255 characters').optional(),
     is_featured: z.boolean().default(false),
+    filter_option_ids: z.array(z.string().uuid('Invalid filter option ID')).optional().default([]),
   }),
 };
 
@@ -54,6 +56,7 @@ export async function Controller(
     product_label,
     warranty_label,
     is_featured,
+    filter_option_ids,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   // Check if category exists
@@ -110,11 +113,17 @@ export async function Controller(
     // Mark file as saved
     await SaveFile(db, image_id);
 
+    await syncProductFilterOptionMappings(db, newProduct.id, category_id, filter_option_ids ?? []);
+
     await db.query('COMMIT');
 
-    return res.status(200).json(newProduct);
-  } catch (error) {
+    const filterOptions = await listProductFilterOptionMappings(db, newProduct.id);
+    return res.status(200).json({ ...newProduct, filter_options: filterOptions });
+  } catch (error: any) {
     await db.query('ROLLBACK');
+    if (error?.message?.startsWith('Invalid filter_option_ids')) {
+      return res.status(400).json({ message: error.message });
+    }
     return next(error);
   }
 }

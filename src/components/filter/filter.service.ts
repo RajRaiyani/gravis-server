@@ -101,6 +101,56 @@ export async function listCategoryFilters(db: DatabaseClient, category_id: strin
 }
 
 
+export async function listProductFilterOptionMappings(db: DatabaseClient, product_id: string) {
+  const rows = await db.queryAll<{ filter_option_id: string; filter_id: string; filter_name: string; value: string }>(
+    `SELECT
+      pfom.filter_option_id,
+      f.id as filter_id,
+      f.name as filter_name,
+      fo.value
+    FROM product_filter_option_mappings pfom
+    JOIN filter_options fo ON fo.id = pfom.filter_option_id
+    JOIN filters f ON f.id = fo.filter_id
+    WHERE pfom.product_id = $1
+    ORDER BY f.name, fo.value`,
+    [product_id],
+  );
+  return rows;
+}
+
+export async function getValidFilterOptionIdsForCategory(db: DatabaseClient, category_id: string) {
+  const rows = await db.queryAll<{ id: string }>(
+    `SELECT fo.id FROM filter_options fo
+     JOIN filters f ON f.id = fo.filter_id
+     WHERE f.category_id = $1`,
+    [category_id],
+  );
+  return rows.map((r) => r.id);
+}
+
+export async function syncProductFilterOptionMappings(
+  db: DatabaseClient,
+  product_id: string,
+  category_id: string,
+  filter_option_ids: string[],
+) {
+  const validIds = await getValidFilterOptionIdsForCategory(db, category_id);
+  const validSet = new Set(validIds);
+  const invalid = filter_option_ids.filter((id) => !validSet.has(id));
+  if (invalid.length > 0) {
+    throw new Error(`Invalid filter_option_ids for this category: ${invalid.join(', ')}`);
+  }
+
+  await db.query('DELETE FROM product_filter_option_mappings WHERE product_id = $1', [product_id]);
+
+  for (const filter_option_id of filter_option_ids) {
+    await db.query(
+      'INSERT INTO product_filter_option_mappings (product_id, filter_option_id) VALUES ($1, $2)',
+      [product_id, filter_option_id],
+    );
+  }
+}
+
 export async function createProductFilterOptionMapping(db: DatabaseClient, data: { product_id: string, filter_option_id: string }) {
   const productFilterOptionMapping = await db.queryOne(`
     INSERT INTO product_filter_option_mappings (product_id, filter_option_id) VALUES ($1, $2) RETURNING *
