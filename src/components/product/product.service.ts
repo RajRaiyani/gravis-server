@@ -42,7 +42,17 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
       json_build_object(
         'id', pc.id,
         'name', pc.name,
-        'description', pc.description
+        'description', pc.description,
+        'image', json_build_object(
+          'id', fc.id,
+          'key', fc.key,
+          'url', ('${env.fileStorageEndpoint}/' || fc.key)
+        ),
+        'banner_image', json_build_object(
+          'id', fcb.id,
+          'key', fcb.key,
+          'url', ('${env.fileStorageEndpoint}/' || fcb.key)
+        )
       ) as category,
       json_build_object(
         'id', fp.id,
@@ -69,8 +79,10 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
     LEFT JOIN product_images ppi ON p.id = ppi.product_id AND ppi.is_primary = true
     LEFT JOIN files f ON pi.image_id = f.id
     LEFT JOIN files fp ON ppi.image_id = fp.id
+    LEFT JOIN files fc ON pc.image_id = fc.id
+    LEFT JOIN files fcb ON pc.banner_image_id = fcb.id
     ${whereClause}
-    GROUP BY p.id, pc.id, pc.name, pc.description, fp.id, fp.key
+    GROUP BY p.id, pc.id, pc.name, pc.description, fc.id, fc.key, fcb.id, fcb.key, fp.id, fp.key
     ORDER BY p.created_at DESC
     LIMIT $limit OFFSET $offset
   `;
@@ -141,7 +153,17 @@ export async function GetProduct(db: DatabaseClient, id: string, customer_id?: s
     json_build_object(
       'id', pc.id,
       'name', pc.name,
-      'description', pc.description
+      'description', pc.description,
+      'image', json_build_object(
+        'id', fc.id,
+        'key', fc.key,
+        'url', ('${env.fileStorageEndpoint}/' || fc.key)
+      ),
+      'banner_image', json_build_object(
+        'id', fcb.id,
+        'key', fcb.key,
+        'url', ('${env.fileStorageEndpoint}/' || fcb.key)
+      )
     ) as category,
     json_build_object(
       'id', fp.id,
@@ -168,8 +190,10 @@ export async function GetProduct(db: DatabaseClient, id: string, customer_id?: s
   LEFT JOIN product_images ppi ON p.id = ppi.product_id AND ppi.is_primary = true
   LEFT JOIN files fp ON ppi.image_id = fp.id
   LEFT JOIN files f ON pi.image_id = f.id
+  LEFT JOIN files fc ON pc.image_id = fc.id
+  LEFT JOIN files fcb ON pc.banner_image_id = fcb.id
   WHERE p.id = $1
-  GROUP BY p.id, pc.id, pc.name, pc.description, fp.id, fp.key
+  GROUP BY p.id, pc.id, pc.name, pc.description, fc.id, fc.key, fcb.id, fcb.key, fp.id, fp.key
 `;
 
   const product = await db.queryOne(productQuery, [id]);

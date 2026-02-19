@@ -809,6 +809,25 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "category banners",
+              "id": "88f829d7-8df4-4778-8e51-da99359145cd",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/e-commerce/product-categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "e-commerce",
+                    "product-categories"
+                  ]
+                }
+              },
+              "response": []
             }
           ],
           "id": "a6f89fbc-0d7c-42ec-aed4-b8996814128c"
