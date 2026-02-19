@@ -817,13 +817,14 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/e-commerce/product-categories",
+                  "raw": "{{base_url}}/e-commerce/product-categories/banners",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "e-commerce",
-                    "product-categories"
+                    "product-categories",
+                    "banners"
                   ]
                 }
               },
@@ -1531,6 +1532,278 @@
           "id": "dfd53628-d919-496a-97ae-fdc66bf4f938"
         },
         {
+          "name": "Filter & filter options",
+          "item": [
+            {
+              "name": "1. List category filters",
+              "id": "93808ede-c596-4442-b2cb-afae26eef499",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/filters?category_id={{category_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters"
+                  ],
+                  "query": [
+                    {
+                      "key": "category_id",
+                      "value": "{{category_id}}"
+                    }
+                  ]
+                },
+                "description": "List all filters for a product category. Requires `category_id` (UUID) from product-categories."
+              },
+              "response": []
+            },
+            {
+              "name": "2. Create filter",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "  const json = pm.response.json();",
+                      "  if (json.id) pm.collectionVariables.set('filter_id', json.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "id": "b93e7aee-9057-4c4b-9ef9-ab56c0c4caed"
+                  }
+                }
+              ],
+              "id": "987172ae-c401-4652-b89c-9ed19af617d8",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"name\": \"Color\",\n  \"options\": [\"Red\", \"Blue\", \"Green\"]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/filters",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters"
+                  ]
+                },
+                "description": "Create a filter for a category. Optionally include initial options. Response includes created filter and options; `filter_id` is saved for next requests."
+              },
+              "response": []
+            },
+            {
+              "name": "3. Create filter option",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "  const json = pm.response.json();",
+                      "  if (json.id) pm.collectionVariables.set('filter_option_id', json.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "id": "d8b0193a-86a9-42a4-9f28-c50b6a2994e3"
+                  }
+                }
+              ],
+              "id": "50e6afd7-e4c9-4bba-bb67-5305afab1287",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filter_id\": \"{{filter_id}}\",\n  \"value\": \"Yellow\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/filters/options",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters",
+                    "options"
+                  ]
+                },
+                "description": "Add an option to an existing filter. Uses `filter_id` from Create Filter response (or set manually). Saves `filter_option_id` for update/delete."
+              },
+              "response": []
+            },
+            {
+              "name": "4. Update filter",
+              "id": "ca6b0ff9-dada-43dd-adba-350249e44859",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Colour\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/filters/{{filter_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters",
+                    "{{filter_id}}"
+                  ]
+                },
+                "description": "Update filter name. Uses `filter_id` from Create Filter or List response."
+              },
+              "response": []
+            },
+            {
+              "name": "5. Update filter option",
+              "id": "3de6e52e-28c3-4a07-8395-93660ce7842c",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": \"Gold\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/filters/options/{{filter_option_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters",
+                    "options",
+                    "{{filter_option_id}}"
+                  ]
+                },
+                "description": "Update filter option value. Uses `filter_option_id` from Create Filter Option or List response."
+              },
+              "response": []
+            },
+            {
+              "name": "6. Delete filter option",
+              "id": "c82e0b73-9646-4e19-8ec3-52f19f254787",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/filters/options/{{filter_option_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters",
+                    "options",
+                    "{{filter_option_id}}"
+                  ]
+                },
+                "description": "Delete a filter option. Returns 204 No Content."
+              },
+              "response": []
+            },
+            {
+              "name": "7. Delete filter",
+              "id": "02acb0f3-086a-451d-889c-18532819c33e",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/filters/{{filter_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "filters",
+                    "{{filter_id}}"
+                  ]
+                },
+                "description": "Delete a filter (and its options via DB cascade if applicable). Returns 204 No Content."
+              },
+              "response": []
+            }
+          ],
+          "id": "74cfce0f-79d0-4150-a7dc-04a9fe9e6d46"
+        },
+        {
           "name": "Admin login",
           "id": "7464271a-5f83-4888-8163-8c02483e8413",
           "request": {
@@ -1695,7 +1968,15 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": ""
+          "raw": "{{base_url}}/e-commerce/products/featured",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "e-commerce",
+            "products",
+            "featured"
+          ]
         }
       },
       "response": []
