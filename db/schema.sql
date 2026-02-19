@@ -1,4 +1,4 @@
-\restrict LgbMPkmMFiwhZ4WKl25BJbNDSfZ8UElpHHk3dVRio7elerhdAOcijdakNMTOXKI
+\restrict Pk0ZIjSB9poEbR0bJEq1asoSguoP6nEDvHwPBarylvc4S4KK77FV9IRNAjuWv24
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1
@@ -80,6 +80,28 @@ CREATE TABLE public.files (
 
 
 --
+-- Name: filter_options; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.filter_options (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    filter_id uuid NOT NULL,
+    value character varying(255) NOT NULL
+);
+
+
+--
+-- Name: filters; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.filters (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    category_id uuid NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+--
 -- Name: inquiries; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -106,7 +128,18 @@ CREATE TABLE public.product_categories (
     description text,
     image_id uuid,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone
+    updated_at timestamp with time zone,
+    banner_image_id uuid
+);
+
+
+--
+-- Name: product_filter_option_mappings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.product_filter_option_mappings (
+    product_id uuid NOT NULL,
+    filter_option_id uuid NOT NULL
 );
 
 
@@ -139,7 +172,10 @@ CREATE TABLE public.products (
     updated_at timestamp with time zone,
     sale_price_in_rupee numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa)::numeric / 100.00), 2)) STORED,
     sale_price numeric(12,2) GENERATED ALWAYS AS (round(((sale_price_in_paisa)::numeric / 100.00), 2)) STORED,
-    can_purchase boolean DEFAULT true NOT NULL
+    can_purchase boolean DEFAULT true NOT NULL,
+    product_label character varying(100),
+    warranty_label character varying(255),
+    is_featured boolean DEFAULT false
 );
 
 
@@ -213,6 +249,22 @@ ALTER TABLE ONLY public.files
 
 
 --
+-- Name: filter_options pk_filter_options; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.filter_options
+    ADD CONSTRAINT pk_filter_options PRIMARY KEY (id);
+
+
+--
+-- Name: filters pk_filters; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.filters
+    ADD CONSTRAINT pk_filters PRIMARY KEY (id);
+
+
+--
 -- Name: inquiries pk_inquiries; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -226,6 +278,14 @@ ALTER TABLE ONLY public.inquiries
 
 ALTER TABLE ONLY public.product_categories
     ADD CONSTRAINT pk_product_categories PRIMARY KEY (id);
+
+
+--
+-- Name: product_filter_option_mappings pk_product_filter_option_mappings; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.product_filter_option_mappings
+    ADD CONSTRAINT pk_product_filter_option_mappings PRIMARY KEY (product_id, filter_option_id);
 
 
 --
@@ -293,6 +353,22 @@ ALTER TABLE ONLY public.files
 
 
 --
+-- Name: filter_options uk_filter_options_filter_id_value; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.filter_options
+    ADD CONSTRAINT uk_filter_options_filter_id_value UNIQUE (filter_id, value);
+
+
+--
+-- Name: filters uk_filters_category_id_name; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.filters
+    ADD CONSTRAINT uk_filters_category_id_name UNIQUE (category_id, name);
+
+
+--
 -- Name: product_categories uk_product_categories_name; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -349,6 +425,22 @@ ALTER TABLE ONLY public.carts
 
 
 --
+-- Name: filter_options fk_filter_options_filter_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.filter_options
+    ADD CONSTRAINT fk_filter_options_filter_id FOREIGN KEY (filter_id) REFERENCES public.filters(id);
+
+
+--
+-- Name: filters fk_filters_category_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.filters
+    ADD CONSTRAINT fk_filters_category_id FOREIGN KEY (category_id) REFERENCES public.product_categories(id);
+
+
+--
 -- Name: inquiries fk_inquiries_customer_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -365,11 +457,35 @@ ALTER TABLE ONLY public.inquiries
 
 
 --
+-- Name: product_categories fk_product_categories_banner_image_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.product_categories
+    ADD CONSTRAINT fk_product_categories_banner_image_id FOREIGN KEY (banner_image_id) REFERENCES public.files(id);
+
+
+--
 -- Name: product_categories fk_product_categories_image_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.product_categories
     ADD CONSTRAINT fk_product_categories_image_id FOREIGN KEY (image_id) REFERENCES public.files(id);
+
+
+--
+-- Name: product_filter_option_mappings fk_product_filter_option_mappings_filter_option_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.product_filter_option_mappings
+    ADD CONSTRAINT fk_product_filter_option_mappings_filter_option_id FOREIGN KEY (filter_option_id) REFERENCES public.filter_options(id);
+
+
+--
+-- Name: product_filter_option_mappings fk_product_filter_option_mappings_product_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.product_filter_option_mappings
+    ADD CONSTRAINT fk_product_filter_option_mappings_product_id FOREIGN KEY (product_id) REFERENCES public.products(id);
 
 
 --
@@ -400,7 +516,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict LgbMPkmMFiwhZ4WKl25BJbNDSfZ8UElpHHk3dVRio7elerhdAOcijdakNMTOXKI
+\unrestrict Pk0ZIjSB9poEbR0bJEq1asoSguoP6nEDvHwPBarylvc4S4KK77FV9IRNAjuWv24
 
 
 --
@@ -416,4 +532,6 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260203051605'),
     ('20260205084732'),
     ('20260205135203'),
-    ('20260206184727');
+    ('20260206184727'),
+    ('20260218111207'),
+    ('20260219081545');
