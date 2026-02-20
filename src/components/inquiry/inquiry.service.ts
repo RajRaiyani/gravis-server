@@ -99,15 +99,7 @@ export async function ListInquiries(
     offset,
   });
 
-  return {
-    data,
-    meta: {
-      total,
-      offset,
-      limit,
-      hasMore: offset + limit < total,
-    },
-  };
+  return data;
 }
 
 export async function GetInquiry(db: DatabaseClient, id: string) {
@@ -252,15 +244,14 @@ export async function CreateProductInquiry(
 
 /**
  * Create a product inquiry without login (guest).
- * Stores name, email, phone_number in meta_data; customer_id is null.
+ * Stores name, phone_number in meta_data; customer_id is null.
  */
 export async function CreateGuestProductInquiry(
   db: DatabaseClient,
   data: {
     product_id: string;
-    message: string;
+    message?: string;
     name: string;
-    email: string;
     phone_number: string;
     quantity?: number;
   }
@@ -276,18 +267,19 @@ export async function CreateGuestProductInquiry(
 
   const meta_data: Record<string, unknown> = {
     name: data.name,
-    email: data.email,
     phone_number: data.phone_number,
   };
   if (data.quantity != null) {
     meta_data.quantity = data.quantity;
   }
 
+  const message = data.message?.trim() || null;
+
   const inquiry = await db.queryOne(
     `INSERT INTO inquiries (type, customer_id, product_id, message, meta_data, status)
      VALUES ($1, NULL, $2, $3, $4, $5)
      RETURNING *`,
-    ['product', data.product_id, data.message, meta_data, 'pending']
+    ['product', data.product_id, message, meta_data, 'pending']
   );
 
   return inquiry;
