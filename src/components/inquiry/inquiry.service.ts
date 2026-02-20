@@ -66,6 +66,15 @@ export async function ListInquiries(
         ELSE NULL
       END as customer,
       CASE
+        WHEN i.customer_id IS NULL AND i.meta_data IS NOT NULL THEN
+          json_build_object(
+            'name', i.meta_data->>'name',
+            'email', i.meta_data->>'email',
+            'phone_number', i.meta_data->>'phone_number'
+          )
+        ELSE NULL
+      END as guest_contact,
+      CASE
         WHEN i.product_id IS NOT NULL THEN
           json_build_object(
             'id', p.id,
@@ -125,6 +134,15 @@ export async function GetInquiry(db: DatabaseClient, id: string) {
           )
         ELSE NULL
       END as customer,
+      CASE
+        WHEN i.customer_id IS NULL AND i.meta_data IS NOT NULL THEN
+          json_build_object(
+            'name', i.meta_data->>'name',
+            'email', i.meta_data->>'email',
+            'phone_number', i.meta_data->>'phone_number'
+          )
+        ELSE NULL
+      END as guest_contact,
       CASE
         WHEN i.product_id IS NOT NULL THEN
           json_build_object(
@@ -227,6 +245,49 @@ export async function CreateProductInquiry(
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
     ['product', data.customer_id, data.product_id, data.message, meta_data, 'pending']
+  );
+
+  return inquiry;
+}
+
+/**
+ * Create a product inquiry without login (guest).
+ * Stores name, email, phone_number in meta_data; customer_id is null.
+ */
+export async function CreateGuestProductInquiry(
+  db: DatabaseClient,
+  data: {
+    product_id: string;
+    message: string;
+    name: string;
+    email: string;
+    phone_number: string;
+    quantity?: number;
+  }
+) {
+  const product = await db.queryOne(
+    'SELECT id, name FROM products WHERE id = $1',
+    [data.product_id]
+  );
+
+  if (!product) {
+    throw new Error('Product not found');
+  }
+
+  const meta_data: Record<string, unknown> = {
+    name: data.name,
+    email: data.email,
+    phone_number: data.phone_number,
+  };
+  if (data.quantity != null) {
+    meta_data.quantity = data.quantity;
+  }
+
+  const inquiry = await db.queryOne(
+    `INSERT INTO inquiries (type, customer_id, product_id, message, meta_data, status)
+     VALUES ($1, NULL, $2, $3, $4, $5)
+     RETURNING *`,
+    ['product', data.product_id, data.message, meta_data, 'pending']
   );
 
   return inquiry;

@@ -13,6 +13,11 @@ import {
   Controller as createProductInquiryController,
 } from '@/components/e-commerce/inquiry/createProductInquiry.js';
 
+import {
+  ValidationSchema as createGuestProductInquiryValidationSchema,
+  Controller as createGuestProductInquiryController,
+} from '@/components/e-commerce/inquiry/createGuestProductInquiry.js';
+
 const router = express.Router();
 
 router
@@ -28,6 +33,14 @@ router
     ParseToken,
     validate(createProductInquiryValidationSchema),
     WithDatabase(createProductInquiryController)
+  );
+
+/** Guest product inquiry – no auth required */
+router
+  .route('/guest-product')
+  .post(
+    validate(createGuestProductInquiryValidationSchema),
+    WithDatabase(createGuestProductInquiryController)
   );
 
 export default router;
