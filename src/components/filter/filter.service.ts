@@ -86,18 +86,28 @@ export async function listCategoryFilters(db: DatabaseClient, category_id: strin
       f.id,
       f.category_id,
       f.name,
-      json_agg(json_build_object(
-        'id', fo.id,
-        'value', fo.value
-      )) as options
+      json_agg(
+        json_build_object(
+          'id', fo.id,
+          'category_filter_id', f.id,
+          'value', fo.value
+        )
+      ) FILTER (WHERE fo.id IS NOT NULL) AS options
     FROM filters f
     LEFT JOIN filter_options fo ON f.id = fo.filter_id
     WHERE f.category_id = $1
-    GROUP BY f.id, f.name
+    GROUP BY f.id, f.category_id, f.name
     ORDER BY f.name ASC
-    `, [category_id]);
+  `, [category_id]);
 
-  return filters;
+  return (filters || []).map((row: { id: string; category_id: string; name: string; options: unknown }) => ({
+    id: row.id,
+    category_id: row.category_id,
+    name: row.name,
+    slug: row.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+    sort_order: 0,
+    options: row.options ?? [],
+  }));
 }
 
 
@@ -118,6 +128,28 @@ export async function listProductFilterOptionMappings(db: DatabaseClient, produc
   return rows;
 }
 
+export async function listProductFilterOptionIdsByProductIds(
+  db: DatabaseClient,
+  product_ids: string[],
+): Promise<Map<string, string[]>> {
+  if (product_ids.length === 0) return new Map();
+
+  const rows = await db.queryAll<{ product_id: string; filter_option_id: string }>(
+    `SELECT product_id, filter_option_id
+     FROM product_filter_option_mappings
+     WHERE product_id = ANY($1::uuid[])`,
+    [product_ids],
+  );
+
+  const map = new Map<string, string[]>();
+  for (const row of rows) {
+    const arr = map.get(row.product_id) ?? [];
+    arr.push(row.filter_option_id);
+    map.set(row.product_id, arr);
+  }
+  return map;
+}
+
 export async function getValidFilterOptionIdsForCategory(db: DatabaseClient, category_id: string) {
   const rows = await db.queryAll<{ id: string }>(
     `SELECT fo.id FROM filter_options fo
@@ -126,6 +158,37 @@ export async function getValidFilterOptionIdsForCategory(db: DatabaseClient, cat
     [category_id],
   );
   return rows.map((r) => r.id);
+}
+
+/**
+ * Returns product_ids that match all selected filter groups: OR within same filter, AND across filters.
+ * So (Brand = Samsung OR LG) AND (Screen Size = 32 inch) => product must have at least one option from each filter.
+ */
+export async function getProductIdsMatchingFilterOptions(
+  db: DatabaseClient,
+  option_ids: string[],
+): Promise<string[]> {
+  if (option_ids.length === 0) return [];
+
+  const rows = await db.queryAll<{ product_id: string }>(
+    `WITH opts AS (
+       SELECT id, filter_id FROM filter_options WHERE id = ANY($1::uuid[])
+     ),
+     filter_count AS (
+       SELECT COUNT(DISTINCT filter_id) AS cnt FROM opts
+     ),
+     product_match AS (
+       SELECT pfom.product_id, COUNT(DISTINCT o.filter_id) AS matched_filters
+       FROM product_filter_option_mappings pfom
+       JOIN opts o ON o.id = pfom.filter_option_id
+       GROUP BY pfom.product_id
+     )
+     SELECT pm.product_id
+     FROM product_match pm
+     JOIN filter_count fc ON fc.cnt = pm.matched_filters`,
+    [option_ids],
+  );
+  return rows.map((r) => r.product_id);
 }
 
 export async function syncProductFilterOptionMappings(

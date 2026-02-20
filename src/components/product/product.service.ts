@@ -1,6 +1,10 @@
 import { DatabaseClient } from '@/service/database/index.js';
 import env from '@/config/env.js';
-import { listProductFilterOptionMappings } from '@/components/filter/filter.service.js';
+import {
+  listProductFilterOptionMappings,
+  getProductIdsMatchingFilterOptions,
+  listProductFilterOptionIdsByProductIds,
+} from '@/components/filter/filter.service.js';
 
 type ListProductsQuery = {
   category_id?: string;
@@ -9,10 +13,19 @@ type ListProductsQuery = {
   limit?: number;
   customer_id?: string;
   only_featured?: boolean;
+  option_ids?: string[];
 };
 
 export async function ListProducts(db: DatabaseClient, query: ListProductsQuery) {
-  const { category_id, search, offset, limit, customer_id, only_featured } = query;
+  const { category_id, search, offset, limit, customer_id, only_featured, option_ids } = query;
+
+  let productIdsFilter: string[] | null = null;
+  if (option_ids && option_ids.length > 0) {
+    productIdsFilter = await getProductIdsMatchingFilterOptions(db, option_ids);
+    if (productIdsFilter.length === 0) {
+      return [];
+    }
+  }
 
   // Build WHERE conditions
   let whereClause = ' WHERE 1=1 ';
@@ -22,6 +35,10 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
   if (search) whereClause += ' AND (p.name ILIKE LOWER($search)) ';
 
   if (only_featured) whereClause += ' AND p.is_featured = true';
+
+  if (productIdsFilter && productIdsFilter.length > 0) {
+    whereClause += ' AND p.id = ANY($product_ids) ';
+  }
 
 
   const listQuery = `
@@ -89,12 +106,17 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
   `;
 
 
-  const data = await db.namedQueryAll(listQuery, {
+  const params: Record<string, unknown> = {
     limit,
     offset,
     category_id,
     search: search ? `%${search}%` : null,
-  });
+  };
+  if (productIdsFilter && productIdsFilter.length > 0) {
+    params.product_ids = productIdsFilter;
+  }
+
+  const data = await db.namedQueryAll(listQuery, params);
 
   if (customer_id && data.length > 0) {
     const product_ids = data.map((p: any) => p.id);
@@ -124,6 +146,14 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
         product.has_pending_inquiry = false;
         product.pending_inquiry_id = null;
       }
+    });
+  }
+
+  if (data.length > 0) {
+    const productIds = data.map((p: { id: string }) => p.id);
+    const filterOptionIdsByProduct = await listProductFilterOptionIdsByProductIds(db, productIds);
+    data.forEach((product: { id: string; filter_option_ids?: string[] }) => {
+      product.filter_option_ids = filterOptionIdsByProduct.get(product.id) ?? [];
     });
   }
 
