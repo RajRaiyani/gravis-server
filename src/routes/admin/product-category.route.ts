@@ -9,7 +9,10 @@ import { ValidationSchema as createProductCategoryValidationSchema, Controller a
 import { ValidationSchema as getProductCategoryValidationSchema, Controller as getProductCategoryController } from '@/components/admin/product-category/getProductCategory.js';
 import { ValidationSchema as updateProductCategoryValidationSchema, Controller as updateProductCategoryController } from '@/components/admin/product-category/updateProductCategory.js';
 import { ValidationSchema as deleteProductCategoryValidationSchema, Controller as deleteProductCategoryController } from '@/components/admin/product-category/deleteProductCategory.js';
-
+import {
+  ValidationSchema as listCategoryFiltersValidationSchema,
+  Controller as listCategoryFiltersController,
+} from '@/components/admin/product-category/listCategoryFilters.js';
 
 const router = express.Router();
 
@@ -17,6 +20,13 @@ router.route('/')
   .get(PrivateRoute, WithDatabase(listProductCategoriesController))
   .post(PrivateRoute, uploadImage.single('image'), validate(createProductCategoryValidationSchema), WithDatabase(createProductCategoryController));
 
+router
+  .route('/:category_id/filters')
+  .get(
+    PrivateRoute,
+    validate(listCategoryFiltersValidationSchema),
+    WithDatabase(listCategoryFiltersController),
+  );
 
 router.route('/:id')
   .get(PrivateRoute, validate(getProductCategoryValidationSchema), WithDatabase(getProductCategoryController))
