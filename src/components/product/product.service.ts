@@ -17,29 +17,21 @@ type ListProductsQuery = {
 export async function ListProducts(db: DatabaseClient, query: ListProductsQuery) {
   const { category_id, search, offset, limit, customer_id, only_featured, filter_option_ids } = query;
 
-
-
   // Build WHERE conditions
   let whereClause = ' TRUE ';
-
   if (category_id) whereClause += ' AND p.category_id = $category_id';
-
-  if (search) whereClause += ' AND (p.name ILIKE LOWER($search)) ';
-
+  if (search) whereClause += ' AND (p.name ILIKE $search) ';
   if (only_featured) whereClause += ' AND p.is_featured = true';
 
   let withQueryStmt = '';
   if (filter_option_ids && filter_option_ids.length > 0) {
-
     withQueryStmt += `
       used_filter_options AS (
         SELECT id, filter_id FROM filter_options WHERE id = ANY($filter_option_ids::uuid[])
       ),
-
       total_used_filters AS (
         SELECT COUNT(DISTINCT filter_id) AS count FROM used_filter_options
       ),
-
       products_with_matching_filter_counts AS (
         SELECT
           pfom.product_id,
@@ -48,18 +40,14 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
         JOIN used_filter_options o ON o.id = pfom.filter_option_id
         GROUP BY pfom.product_id
       ),
-
       filtered_product_with_options AS (
-        SELECT
-          pwmfc.product_id
+        SELECT pwmfc.product_id
         FROM products_with_matching_filter_counts pwmfc
         JOIN total_used_filters tuf ON tuf.count = pwmfc.matched_filters
       ),
     `;
-    whereClause += ' AND p.id in (select product_id distinct from filtered_product_with_options) ';
+    whereClause += ' AND p.id IN (SELECT product_id FROM filtered_product_with_options) ';
   }
-
-
 
   const listQuery = `
     WITH
@@ -70,7 +58,6 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
       LEFT JOIN product_categories pc ON p.category_id = pc.id
       WHERE ${whereClause}
     )
-
     SELECT
       p.id,
       p.category_id,
@@ -80,6 +67,7 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
       p.metadata,
       p.sale_price_in_paisa,
       p.sale_price_in_rupee,
+      p.sale_price_in_rupee AS sale_price,
       p.created_at,
       p.updated_at,
       p.points,
@@ -90,14 +78,14 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
         'id', pc.id,
         'name', pc.name,
         'description', pc.description
-      ) as category,
+      ) AS category,
       json_build_object(
         'id', f.id,
         'key', f.key,
         'url', ('${env.fileStorageEndpoint}/' || f.key)
-      ) as primary_image,
-      CASE WHEN i.id IS NOT NULL THEN true ELSE false END as has_pending_inquiry,
-      CASE WHEN i.id IS NOT NULL THEN i.id ELSE NULL END as pending_inquiry_id
+      ) AS primary_image,
+      CASE WHEN i.id IS NOT NULL THEN true ELSE false END AS has_pending_inquiry,
+      CASE WHEN i.id IS NOT NULL THEN i.id ELSE NULL END AS pending_inquiry_id
     FROM filtered_products p
     LEFT JOIN product_categories pc ON p.category_id = pc.id
     LEFT JOIN inquiries i ON p.id = i.product_id AND i.customer_id = $customer_id AND i.status = 'pending'
@@ -107,24 +95,20 @@ export async function ListProducts(db: DatabaseClient, query: ListProductsQuery)
     LIMIT $limit OFFSET $offset
   `;
 
-
   const params: Record<string, unknown> = {
     limit,
     offset,
-    category_id,
-    customer_id,
+    category_id: category_id ?? null,
+    customer_id: customer_id ?? null,
     search: search ? `%${search}%` : null,
-    filter_option_ids,
+    filter_option_ids: filter_option_ids ?? null,
   };
 
   const data = await db.namedQueryAll(listQuery, params);
-
   return data;
 }
 
-
 export async function GetProduct(db: DatabaseClient, id: string, customer_id?: string) {
-
   const productQuery = `
   SELECT
     p.id,
