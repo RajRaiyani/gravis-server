@@ -1,7 +1,7 @@
-\restrict ttgvYGUaeSeu85N5lLxqmJmZhFU9oDuyIbT3WWZKfp2fRLSvyXzidbJj4dFDsLC
+\restrict AQC6ayZGsosyjcAR4Wa1E1vzHiZmTNleNPvi955TfOcN0gRPt75cVEfhSF97VKG
 
--- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
--- Dumped by pg_dump version 18.1
+-- Dumped from database version 18.3 (Debian 18.3-1.pgdg13+1)
+-- Dumped by pg_dump version 18.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,9 +15,48 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: address_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.address_type AS ENUM (
+    'billing',
+    'shipping'
+);
+
+
+--
+-- Name: order_payment_status; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.order_payment_status AS ENUM (
+    'pending',
+    'paid',
+    'partially_paid',
+    'failed'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: addresses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.addresses (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    type public.address_type NOT NULL,
+    customer_id uuid NOT NULL,
+    address text NOT NULL,
+    state_id uuid NOT NULL,
+    city character varying(255) NOT NULL,
+    postal_code character varying(10) NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone
+);
+
 
 --
 -- Name: cart_items; Type: TABLE; Schema: public; Owner: -
@@ -119,6 +158,44 @@ CREATE TABLE public.inquiries (
 
 
 --
+-- Name: order_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.order_items (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    order_id uuid NOT NULL,
+    product_id uuid NOT NULL,
+    product_name character varying(255) NOT NULL,
+    quantity integer DEFAULT 1 NOT NULL,
+    price_in_paisa integer NOT NULL
+);
+
+
+--
+-- Name: orders; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.orders (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    customer_id uuid NOT NULL,
+    payment_status public.order_payment_status DEFAULT 'pending'::public.order_payment_status NOT NULL,
+    status character varying(50) DEFAULT 'pending'::character varying NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    total_amount_in_paisa integer NOT NULL,
+    paid_amount_in_paisa integer NOT NULL,
+    is_paid boolean DEFAULT false NOT NULL,
+    razorpay_payment_id character varying(255),
+    razorpay_order_id character varying(255),
+    razorpay_signature text,
+    serial_number integer NOT NULL,
+    billing_details jsonb NOT NULL,
+    billing_address jsonb NOT NULL,
+    shipping_address jsonb NOT NULL,
+    serial character varying(50) GENERATED ALWAYS AS (('GRAVIS-ORD-'::text || serial_number)) STORED
+);
+
+
+--
 -- Name: product_categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -189,6 +266,18 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: states; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.states (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    name character varying(255) NOT NULL,
+    gst_code character varying(7) NOT NULL,
+    is_union_territory boolean DEFAULT false NOT NULL
+);
+
+
+--
 -- Name: tokens; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -214,6 +303,14 @@ CREATE TABLE public.users (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone
 );
+
+
+--
+-- Name: addresses pk_addresses; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addresses
+    ADD CONSTRAINT pk_addresses PRIMARY KEY (id);
 
 
 --
@@ -273,6 +370,22 @@ ALTER TABLE ONLY public.inquiries
 
 
 --
+-- Name: order_items pk_order_items; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.order_items
+    ADD CONSTRAINT pk_order_items PRIMARY KEY (id);
+
+
+--
+-- Name: orders pk_orders; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT pk_orders PRIMARY KEY (id);
+
+
+--
 -- Name: product_categories pk_product_categories; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -302,6 +415,14 @@ ALTER TABLE ONLY public.product_images
 
 ALTER TABLE ONLY public.products
     ADD CONSTRAINT pk_products PRIMARY KEY (id);
+
+
+--
+-- Name: states pk_states; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.states
+    ADD CONSTRAINT pk_states PRIMARY KEY (id);
 
 
 --
@@ -401,6 +522,22 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: addresses fk_addresses_customer_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addresses
+    ADD CONSTRAINT fk_addresses_customer_id FOREIGN KEY (customer_id) REFERENCES public.customers(id);
+
+
+--
+-- Name: addresses fk_addresses_state_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addresses
+    ADD CONSTRAINT fk_addresses_state_id FOREIGN KEY (state_id) REFERENCES public.states(id);
+
+
+--
 -- Name: cart_items fk_cart_items_cart_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -454,6 +591,22 @@ ALTER TABLE ONLY public.inquiries
 
 ALTER TABLE ONLY public.inquiries
     ADD CONSTRAINT fk_inquiries_product_id FOREIGN KEY (product_id) REFERENCES public.products(id);
+
+
+--
+-- Name: order_items fk_order_items_product_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.order_items
+    ADD CONSTRAINT fk_order_items_product_id FOREIGN KEY (product_id) REFERENCES public.products(id);
+
+
+--
+-- Name: orders fk_orders_customer_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_orders_customer_id FOREIGN KEY (customer_id) REFERENCES public.customers(id);
 
 
 --
@@ -516,7 +669,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ttgvYGUaeSeu85N5lLxqmJmZhFU9oDuyIbT3WWZKfp2fRLSvyXzidbJj4dFDsLC
+\unrestrict AQC6ayZGsosyjcAR4Wa1E1vzHiZmTNleNPvi955TfOcN0gRPt75cVEfhSF97VKG
 
 
 --
@@ -534,4 +687,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260205135203'),
     ('20260206184727'),
     ('20260218111207'),
-    ('20260219081545');
+    ('20260219081545'),
+    ('20260422085113');
