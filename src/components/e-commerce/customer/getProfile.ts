@@ -13,6 +13,7 @@ export async function Controller(
     `SELECT
       id, first_name, last_name, full_name, email,
       phone_number, is_email_verified, is_phone_number_verified,
+      gst_number, pan_number, organization_name,
       created_at, updated_at
     FROM customers
     WHERE id = $1`,
@@ -31,6 +32,9 @@ export async function Controller(
       full_name: customer.full_name,
       email: customer.email,
       phone_number: customer.phone_number,
+      gst_number: customer.gst_number,
+      pan_number: customer.pan_number,
+      organization_name: customer.organization_name,
       is_email_verified: customer.is_email_verified,
       is_phone_number_verified: customer.is_phone_number_verified,
       created_at: customer.created_at,

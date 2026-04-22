@@ -47,6 +47,12 @@ import {
   ValidationSchema as updateProfileValidationSchema,
   Controller as updateProfileController,
 } from '@/components/e-commerce/customer/updateProfile.js';
+import { Controller as getAddressesController } from '@/components/e-commerce/customer/getAddresses.js';
+import {
+  ValidationSchema as upsertAddressValidationSchema,
+  Controller as upsertAddressController,
+} from '@/components/e-commerce/customer/upsertAddress.js';
+import { Controller as listStatesController } from '@/components/e-commerce/customer/listStates.js';
 
 const router = express.Router();
 
@@ -107,5 +113,14 @@ router
     validate(updateProfileValidationSchema),
     WithDatabase(updateProfileController)
   );
+
+router.get('/states', CustomerPrivateRoute, WithDatabase(listStatesController));
+router.get('/addresses', CustomerPrivateRoute, WithDatabase(getAddressesController));
+router.put(
+  '/addresses/:type',
+  CustomerPrivateRoute,
+  validate(upsertAddressValidationSchema),
+  WithDatabase(upsertAddressController)
+);
 
 export default router;

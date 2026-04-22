@@ -1,4 +1,4 @@
-\restrict AQC6ayZGsosyjcAR4Wa1E1vzHiZmTNleNPvi955TfOcN0gRPt75cVEfhSF97VKG
+\restrict dbmate
 
 -- Dumped from database version 18.3 (Debian 18.3-1.pgdg13+1)
 -- Dumped by pg_dump version 18.3
@@ -100,7 +100,10 @@ CREATE TABLE public.customers (
     is_phone_number_verified boolean DEFAULT false NOT NULL,
     password_hash text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone
+    updated_at timestamp with time zone,
+    gst_number character varying(15),
+    pan_number character varying(10),
+    organization_name character varying(255)
 );
 
 
@@ -669,7 +672,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict AQC6ayZGsosyjcAR4Wa1E1vzHiZmTNleNPvi955TfOcN0gRPt75cVEfhSF97VKG
+\unrestrict dbmate
 
 
 --
@@ -688,4 +691,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260206184727'),
     ('20260218111207'),
     ('20260219081545'),
-    ('20260422085113');
+    ('20260422085113'),
+    ('20260422103000');
