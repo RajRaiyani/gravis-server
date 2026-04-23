@@ -73,7 +73,7 @@ export async function Controller(
     `UPDATE customers
      SET ${updates.join(', ')}
      WHERE id = $customer_id
-     RETURNING id, first_name, last_name, full_name, phone_number,
+     RETURNING id, first_name, last_name, full_name, email, phone_number,
               gst_number, pan_number, organization_name,
               is_email_verified, is_phone_number_verified, created_at, updated_at`,
     params
@@ -89,6 +89,7 @@ export async function Controller(
       first_name: customer.first_name,
       last_name: customer.last_name,
       full_name: customer.full_name,
+      email: customer.email,
       phone_number: customer.phone_number,
       gst_number: customer.gst_number,
       pan_number: customer.pan_number,
