@@ -7,6 +7,7 @@ import fileRoutes from './file.route.js';
 import inquiryRoutes from './inquiry.route.js';
 import customerRoutes from './customer.route.js';
 import dashboardRoutes from './dashboard.route.js';
+import orderRoutes from './order.route.js';
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.use('/files', fileRoutes);
 router.use('/inquiry', inquiryRoutes);
 router.use('/customers', customerRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.use('/orders', orderRoutes);
 
 export default router;
