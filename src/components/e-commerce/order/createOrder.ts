@@ -28,7 +28,8 @@ export const ValidationSchemaConfig = {
   }),
 };
 
-const TOKEN_PAYMENT_PERCENTAGE = 10;
+const TOKEN_PAYMENT_PERCENTAGE = 15;
+const MIN_TOKEN_PAYMENT_IN_PAISA = 200000;
 
 function splitName(fullName: string) {
   const trimmed = fullName.trim().replace(/\s+/g, ' ');
@@ -44,7 +45,7 @@ function getPayableAmountInPaisa(totalAmountInPaisa: number, paymentMode: 'full'
   if (paymentMode === 'full') return totalAmountInPaisa;
 
   const tokenAmount = Math.round((totalAmountInPaisa * TOKEN_PAYMENT_PERCENTAGE) / 100);
-  return Math.min(totalAmountInPaisa, Math.max(100, tokenAmount));
+  return Math.min(totalAmountInPaisa, Math.max(MIN_TOKEN_PAYMENT_IN_PAISA, tokenAmount));
 }
 
 export async function Controller(
