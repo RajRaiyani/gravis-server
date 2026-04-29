@@ -57,12 +57,14 @@ export async function Controller(
       );
 
       if (customerCart) {
-        // Customer has cart: merge guest items into customer cart
+        // Customer has cart: merge guest items — sum quantities when same product exists
         await db.query(`
             INSERT INTO cart_items (cart_id, product_id, quantity)
-            SELECT $1, product_id, quantity FROM cart_items WHERE cart_id = $2
+            SELECT $1::uuid, src.product_id, src.quantity
+            FROM cart_items AS src
+            WHERE src.cart_id = $2::uuid
             ON CONFLICT (cart_id, product_id)
-            DO UPDATE SET quantity = EXCLUDED.quantity`,
+            DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity`,
         [customerCart.id, guestCart.id]
         );
 
