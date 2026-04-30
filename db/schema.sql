@@ -1,4 +1,4 @@
-\restrict dbmate
+\restrict 5svcHn1lSMVYs6kfgdAJWFfBSW3cuKsLV3ecCbNuCa2yicVsShUxYKiQU0wFhe9
 
 -- Dumped from database version 18.3 (Debian 18.3-1.pgdg13+1)
 -- Dumped by pg_dump version 18.3
@@ -672,7 +672,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict dbmate
+\unrestrict 5svcHn1lSMVYs6kfgdAJWFfBSW3cuKsLV3ecCbNuCa2yicVsShUxYKiQU0wFhe9
 
 
 --
