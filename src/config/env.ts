@@ -75,6 +75,13 @@ const env = {
     keySecret: process.env.RAZORPAY_KEY_SECRET,
     webhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET,
   },
+
+  sms: {
+    url: process.env.SMS_URL,
+    user: process.env.SMS_USER,
+    password: process.env.SMS_PASSWORD,
+    senderId: process.env.SMS_SENDER_ID,
+  }
 };
 
 export default env;

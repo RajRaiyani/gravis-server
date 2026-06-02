@@ -3,14 +3,12 @@ import CustomerSchema from './customer.validation.js';
 import { DatabaseClient } from '@/service/database/index.js';
 import { Request, Response, NextFunction } from 'express';
 import JwtToken from '@/utils/jwtToken.js';
-import { SendMail } from '@/service/mail/index.js';
-import customerVerifyEmail from '@/utils/emailTemplates/customer/customerVerifyEmail.js';
+import { sendOTP } from '@/service/sms/index.js';
 
 export const ValidationSchema = {
   body: z.object({
     first_name: CustomerSchema.firstName(),
     last_name: CustomerSchema.lastName(),
-    email: CustomerSchema.email(),
     password: CustomerSchema.password(),
     phone_number: CustomerSchema.phoneNumber()
   }),
@@ -26,25 +24,24 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const { first_name, last_name, email, password, phone_number } =
+  const { first_name, last_name, password, phone_number } =
     req.body as z.infer<typeof ValidationSchema.body>;
 
   const existingCustomer = await db.queryOne(
-    'SELECT id FROM customers WHERE LOWER(email) = LOWER($1)',
-    [email]
+    'SELECT id FROM customers WHERE phone_number = $1',
+    [phone_number]
   );
 
   if (existingCustomer) {
-    return res.status(400).json({ message: 'Customer with this email already exists' });
+    return res.status(400).json({ message: 'Customer with this phone number already exists' });
   }
 
   const tokenPayload = {
     type: 'customer_registration_token',
     first_name,
     last_name,
-    email,
     password,
-    phone_number: phone_number || null
+    phone_number
   };
 
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -60,9 +57,7 @@ export async function Controller(
     [token, expiresAt.toISOString(), { otp, type: 'customer_registration' }]
   );
 
-  const mailHtml = customerVerifyEmail(otp);
-
-  await SendMail(email, 'Verify your email', mailHtml);
+  await sendOTP(phone_number, otp);
 
   return res.status(200).json({
     token,

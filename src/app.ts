@@ -17,7 +17,6 @@ app.use(morgan(':method :url Status : :status, Time taken: :response-time ms', {
 }));
 
 app.use(cors({ origin: true, credentials: true }));
-app.use('/api/webhook', webhookRoutes);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -36,6 +35,7 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use('/api/webhook', webhookRoutes);
 
 app.get('/ping', (req, res) => {
   res.status(200).send('pont');

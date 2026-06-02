@@ -2,15 +2,17 @@ import { z } from 'zod';
 import { Request, Response, NextFunction } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import JwtToken from '../../../utils/jwtToken.js';
-import { SendMail } from '@/service/mail/index.js';
-import customerForgotPassword from '../../../utils/emailTemplates/customer/customerForgotPassword.js';
+import { sendOTP } from '@/service/sms/index.js';
 
 export const ValidationSchema = {
   body: z.object({
-    email: z.email().toLowerCase(),
-    redirect_url: z.url(),
+    phone_number: z.string().trim().min(10).max(15),
   }),
 };
+
+function generateOtp() {
+  return Math.floor(100000 + Math.random() * 900000);
+}
 
 export async function Controller(
   req: Request,
@@ -18,16 +20,16 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const { email, redirect_url } = req.body as z.infer<typeof ValidationSchema.body>;
+  const { phone_number } = req.body as z.infer<typeof ValidationSchema.body>;
 
   const customer = await db.queryOne(
-    'SELECT id, first_name FROM customers WHERE LOWER(email) = LOWER($1)',
-    [email]
+    'SELECT id FROM customers WHERE phone_number = $1',
+    [phone_number]
   );
 
   if (!customer) {
     return res.status(200).json({
-      message: 'If an account exists with this email, a reset link has been sent',
+      message: 'If an account exists with this phone number, an OTP has been sent',
     });
   }
 
@@ -42,6 +44,8 @@ export async function Controller(
     expiresIn: `${expiresAt.getTime() - Date.now()}ms`,
   });
 
+  const otp = generateOtp().toString();
+
   await db.query(
     'INSERT INTO tokens (token, expires_at, meta_data) VALUES ($1, $2, $3)',
     [
@@ -50,20 +54,16 @@ export async function Controller(
       {
         type: 'customer_password_reset',
         customer_id: customer.id,
-        redirect_url,
+        otp,
       },
     ]
   );
 
-  const magicLink = `${redirect_url}?token=${token}`;
-
-  await SendMail(
-    email,
-    'Reset your password',
-    customerForgotPassword(magicLink, customer.first_name)
-  );
+  await sendOTP(phone_number, otp);
 
   return res.status(200).json({
-    message: 'If an account exists with this email, a reset link has been sent',
+    message: 'If an account exists with this phone number, an OTP has been sent',
+    token,
+    expires_at: expiresAt.toISOString(),
   });
 }

@@ -3,12 +3,11 @@ import { Request, Response, NextFunction } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
 import JwtToken from '@/utils/jwtToken.js';
 import bcrypt from 'bcryptjs';
-import { SendMail } from '@/service/mail/index.js';
-import customerPasswordChanged from '@/utils/emailTemplates/customer/customerPasswordChanged.js';
 
 export const ValidationSchema = {
   body: z.object({
     token: z.string().nonempty(),
+    otp: z.string().trim().length(6),
     new_password: z.string().min(6).max(100),
   }),
 };
@@ -19,7 +18,7 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const { token, new_password } = req.body as z.infer<typeof ValidationSchema.body>;
+  const { token, otp, new_password } = req.body as z.infer<typeof ValidationSchema.body>;
 
   let payload: { type: string; customer_id: string };
 
@@ -46,6 +45,10 @@ export async function Controller(
     return res.status(400).json({ message: 'Invalid token type' });
   }
 
+  if (record.meta_data.otp !== otp) {
+    return res.status(400).json({ message: 'Invalid OTP' });
+  }
+
   if (new Date(record.expires_at) < new Date()) {
     return res.status(400).json({ message: 'Token has expired' });
   }
@@ -55,10 +58,10 @@ export async function Controller(
   try {
     await db.query('BEGIN');
 
-    const customer = await db.queryOne(
+    await db.queryOne(
       `UPDATE customers SET password_hash = $1, updated_at = NOW()
        WHERE id = $2
-       RETURNING email, first_name`,
+       RETURNING id`,
       [passwordHash, record.meta_data.customer_id]
     );
 
@@ -71,15 +74,6 @@ export async function Controller(
     );
 
     await db.query('COMMIT');
-
-    // Send confirmation email
-    if (customer) {
-      SendMail(
-        customer.email,
-        'Password changed successfully',
-        customerPasswordChanged(customer.first_name)
-      );
-    }
 
     return res.status(200).json({
       message: 'Password reset successful',

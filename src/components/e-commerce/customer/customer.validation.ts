@@ -31,8 +31,7 @@ const CustomerSchema = {
       .string()
       .trim()
       .min(10, 'Phone number must be at least 10 digits')
-      .max(15, 'Phone number must be less than 15 digits')
-      .optional(),
+      .max(15, 'Phone number must be less than 15 digits'),
 
   gstNumber: () =>
     z

@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 
 export const ValidationSchema = {
   body: z.object({
-    email: z.email().toLowerCase(),
+    phone_number: z.string().trim().min(10).max(15),
     password: z.string().trim().nonempty().max(100),
   }),
 };
@@ -17,30 +17,30 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const { email, password } = req.body as z.infer<typeof ValidationSchema.body>;
+  const { phone_number, password } = req.body as z.infer<typeof ValidationSchema.body>;
   const guest_id = req.guest?.id;
 
   const customer = await db.queryOne(
     `SELECT
       id, password_hash, first_name, last_name, full_name,
-      email, phone_number, is_email_verified, created_at
+      email, phone_number, is_phone_number_verified, created_at
     FROM customers
-    WHERE LOWER(email) = LOWER($1)`,
-    [email]
+    WHERE phone_number = $1`,
+    [phone_number]
   );
 
   if (!customer) {
-    return res.status(400).json({ message: 'Invalid email or password' });
+    return res.status(400).json({ message: 'Invalid phone number or password' });
   }
 
   const isPasswordValid = await bcrypt.compare(password, customer.password_hash);
 
   if (!isPasswordValid) {
-    return res.status(400).json({ message: 'Invalid email or password' });
+    return res.status(400).json({ message: 'Invalid phone number or password' });
   }
 
-  if (!customer.is_email_verified) {
-    return res.status(400).json({ message: 'Please verify your email first' });
+  if (!customer.is_phone_number_verified) {
+    return res.status(400).json({ message: 'Please verify your phone number first' });
   }
 
   // Handle guest cart merge/transfer
@@ -99,7 +99,7 @@ export async function Controller(
       full_name: customer.full_name,
       email: customer.email,
       phone_number: customer.phone_number,
-      is_email_verified: customer.is_email_verified,
+      is_phone_number_verified: customer.is_phone_number_verified,
       created_at: customer.created_at,
     },
     token: authToken,

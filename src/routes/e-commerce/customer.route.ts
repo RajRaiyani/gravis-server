@@ -20,6 +20,16 @@ import {
 } from '@/components/e-commerce/customer/resendVerificationEmail.js';
 
 import {
+  ValidationSchema as verifyPhoneNumberValidationSchema,
+  Controller as verifyPhoneNumberController,
+} from '@/components/e-commerce/customer/verifyPhoneNumber.js';
+
+import {
+  ValidationSchema as resendPhoneNumberVerificationValidationSchema,
+  Controller as resendPhoneNumberVerificationController,
+} from '@/components/e-commerce/customer/resendPhoneNumberVerification.js';
+
+import {
   ValidationSchema as loginCustomerValidationSchema,
   Controller as loginCustomerController,
 } from '@/components/e-commerce/customer/loginCustomer.js';
@@ -74,6 +84,19 @@ router.post(
   '/resend-verification',
   validate(resendVerificationEmailValidationSchema),
   WithDatabase(resendVerificationEmailController)
+);
+
+router.post(
+  '/verify-phone-number',
+  ParseToken,
+  validate(verifyPhoneNumberValidationSchema),
+  WithDatabase(verifyPhoneNumberController)
+);
+
+router.post(
+  '/resend-phone-number-verification',
+  validate(resendPhoneNumberVerificationValidationSchema),
+  WithDatabase(resendPhoneNumberVerificationController)
 );
 
 router.post(

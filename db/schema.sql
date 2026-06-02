@@ -1,4 +1,4 @@
-\restrict 5svcHn1lSMVYs6kfgdAJWFfBSW3cuKsLV3ecCbNuCa2yicVsShUxYKiQU0wFhe9
+\restrict Mu6ovv4DkScCGo7ECm0awB6tfq9VOMHQOo9XTc1trqVDoMKWdUGz0ru48gatxoC
 
 -- Dumped from database version 18.3 (Debian 18.3-1.pgdg13+1)
 -- Dumped by pg_dump version 18.3
@@ -493,6 +493,14 @@ ALTER TABLE ONLY public.filters
 
 
 --
+-- Name: customers uk_phone_number; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.customers
+    ADD CONSTRAINT uk_phone_number UNIQUE (phone_number);
+
+
+--
 -- Name: product_categories uk_product_categories_name; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -672,7 +680,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 5svcHn1lSMVYs6kfgdAJWFfBSW3cuKsLV3ecCbNuCa2yicVsShUxYKiQU0wFhe9
+\unrestrict Mu6ovv4DkScCGo7ECm0awB6tfq9VOMHQOo9XTc1trqVDoMKWdUGz0ru48gatxoC
 
 
 --
@@ -692,4 +700,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260218111207'),
     ('20260219081545'),
     ('20260422085113'),
-    ('20260422103000');
+    ('20260422103000'),
+    ('20260602063208');
