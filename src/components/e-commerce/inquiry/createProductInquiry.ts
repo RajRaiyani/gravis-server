@@ -14,6 +14,20 @@ export const ValidationSchema = {
       .min(1, 'Message is required')
       .max(1000, 'Message must be less than 1000 characters'),
     quantity: z.number().int().min(1).max(1000).optional(),
+    name: z
+      .string()
+      .trim()
+      .min(1, 'Name is required')
+      .max(255, 'Name must be less than 255 characters'),
+    email: z
+      .string()
+      .trim()
+      .email({ message: 'Invalid email address' })
+      .toLowerCase(),
+    phone_number: z
+      .string()
+      .trim()
+      .regex(/^[0-9]{10}$/, { message: 'Phone number must be 10 digits' }),
   }),
 };
 
@@ -23,7 +37,7 @@ export async function Controller(
   next: NextFunction,
   db: DatabaseClient
 ) {
-  const { product_id, message, quantity } = req.body as z.infer<
+  const { product_id, message, quantity, name, email, phone_number } = req.body as z.infer<
     typeof ValidationSchema.body
   >;
 
@@ -43,6 +57,9 @@ export async function Controller(
       product_id,
       message,
       quantity,
+      name,
+      email,
+      phone_number,
     });
 
     return res.status(201).json({

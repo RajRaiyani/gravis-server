@@ -9,13 +9,18 @@ export const ValidationSchema = {
     message: z
       .string()
       .trim()
-      .max(1000, 'Message must be less than 1000 characters')
-      .optional(),
+      .min(1, 'Message is required')
+      .max(1000, 'Message must be less than 1000 characters'),
     name: z
       .string()
       .trim()
       .min(1, 'Name is required')
       .max(255, 'Name must be less than 255 characters'),
+    email: z
+      .string()
+      .trim()
+      .email({ message: 'Invalid email address' })
+      .toLowerCase(),
     phone_number: z
       .string()
       .trim()
@@ -32,13 +37,14 @@ export async function Controller(
 ) {
   try {
     const body = req.body as z.infer<typeof ValidationSchema.body>;
-    const { product_id, message, name, phone_number, quantity } = body;
+    const { product_id, message, name, phone_number, email, quantity } = body;
 
     const inquiry = await CreateGuestProductInquiry(db, {
       product_id,
       message,
       name,
       phone_number,
+      email,
       quantity,
     });
 

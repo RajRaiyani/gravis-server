@@ -202,6 +202,9 @@ export async function CreateProductInquiry(
     product_id: string;
     message: string;
     quantity?: number;
+    name?: string;
+    email?: string;
+    phone_number?: string;
   }
 ) {
   // Check if product exists
@@ -231,6 +234,15 @@ export async function CreateProductInquiry(
   if (data.quantity) {
     meta_data.quantity = data.quantity;
   }
+  if (data.name) {
+    meta_data.name = data.name;
+  }
+  if (data.email) {
+    meta_data.email = data.email;
+  }
+  if (data.phone_number) {
+    meta_data.phone_number = data.phone_number;
+  }
 
   const inquiry = await db.queryOne(
     `INSERT INTO inquiries (type, customer_id, product_id, message, meta_data, status)
@@ -244,15 +256,16 @@ export async function CreateProductInquiry(
 
 /**
  * Create a product inquiry without login (guest).
- * Stores name, phone_number in meta_data; customer_id is null.
+ * Stores name, phone_number, email in meta_data; customer_id is null.
  */
 export async function CreateGuestProductInquiry(
   db: DatabaseClient,
   data: {
     product_id: string;
-    message?: string;
+    message: string;
     name: string;
     phone_number: string;
+    email: string;
     quantity?: number;
   }
 ) {
@@ -268,12 +281,13 @@ export async function CreateGuestProductInquiry(
   const meta_data: Record<string, unknown> = {
     name: data.name,
     phone_number: data.phone_number,
+    email: data.email,
   };
   if (data.quantity != null) {
     meta_data.quantity = data.quantity;
   }
 
-  const message = data.message?.trim() || null;
+  const message = data.message.trim();
 
   const inquiry = await db.queryOne(
     `INSERT INTO inquiries (type, customer_id, product_id, message, meta_data, status)
