@@ -1,15 +1,21 @@
 import dotenv from 'dotenv';
 import path from 'path';
+import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-  override: true,
-});
+const envCandidates = [
+  path.join(process.cwd(), '.env'),
+  path.join(__dirname, '../../.env'),
+];
+
+const envPath = envCandidates.find((candidate) => existsSync(candidate));
+if (envPath) {
+  dotenv.config({ path: envPath, override: true });
+}
 
 function parseDatabaseUrl(databaseUrl?: string) {
 

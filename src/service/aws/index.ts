@@ -1,3 +1,1 @@
-import { s3 } from './config.js';
-
-export { s3 };
+export { getS3, isAwsConfigured, isS3BackupConfigured } from './config.js';

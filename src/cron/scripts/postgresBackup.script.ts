@@ -7,18 +7,13 @@ import {
   ListObjectsV2Command,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
-import { s3 } from '@/service/aws/index.js';
+import { getS3, isS3BackupConfigured } from '@/service/aws/index.js';
 
 import env from '@/config/env.js';
 import Constants from '@/config/constant.js';
 
 const RETENTION_COUNT = 15;
-const BACKUP_BUCKET = env.aws.s3BackupBucket;
 const s3BackupKey = 'gravis/database-backups';
-
-if (!BACKUP_BUCKET) {
-  throw new Error('AWS_S3_BACKUP_BUCKET is not set in env');
-}
 
 
 const IST = 'Asia/Kolkata';
@@ -52,10 +47,12 @@ function execPromise(cmd: string) {
 }
 
 async function uploadToS3(filePath: string, key: string) {
+  const bucket = env.aws.s3BackupBucket!;
+  const s3 = getS3();
   const stream = fs.createReadStream(filePath);
   await s3.send(
     new PutObjectCommand({
-      Bucket: BACKUP_BUCKET,
+      Bucket: bucket,
       Key: key,
       Body: stream,
     })
@@ -63,9 +60,11 @@ async function uploadToS3(filePath: string, key: string) {
 }
 
 async function applyRetention(prefix: string) {
+  const bucket = env.aws.s3BackupBucket!;
+  const s3 = getS3();
   const res = await s3.send(
     new ListObjectsV2Command({
-      Bucket: BACKUP_BUCKET,
+      Bucket: bucket,
       Prefix: prefix,
     })
   );
@@ -81,13 +80,19 @@ async function applyRetention(prefix: string) {
   for (const f of oldFiles) {
     await s3.send(
       new DeleteObjectCommand({
-        Bucket: BACKUP_BUCKET,
+        Bucket: bucket,
         Key: f.Key,
       })
     );
   }
 }
+
 export async function task() {
+  if (!isS3BackupConfigured()) {
+    console.warn('[postgresBackup] Skipped — AWS S3 backup is not configured');
+    return;
+  }
+
   const date = formatTimestamp();
   const tmpFile = path.join(Constants.temporaryFileStoragePath, `${date}.sql`);
 

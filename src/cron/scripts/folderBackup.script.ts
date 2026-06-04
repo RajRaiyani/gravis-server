@@ -2,7 +2,7 @@ import fs from 'fs';
 import archiver from 'archiver';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { s3 } from '@/service/aws/index.js';
+import { getS3, isS3BackupConfigured } from '@/service/aws/index.js';
 import {
   PutObjectCommand,
   ListObjectsV2Command,
@@ -15,7 +15,6 @@ import env from '@/config/env.js';
 
 const SOURCE_DIR = env.fileStoragePath;
 const RETENTION_COUNT = 5;
-const BACKUP_BUCKET = env.aws.s3BackupBucket;
 const s3BackupKey = 'gravis/file-backups';
 
 
@@ -62,11 +61,13 @@ async function zipFolder(source: string, out: string): Promise<void> {
 }
 
 async function uploadToS3(filePath: string, key: string) {
+  const bucket = env.aws.s3BackupBucket!;
+  const s3 = getS3();
   const stream = fs.createReadStream(filePath);
 
   await s3.send(
     new PutObjectCommand({
-      Bucket: BACKUP_BUCKET,
+      Bucket: bucket,
       Key: key,
       Body: stream,
     })
@@ -74,9 +75,11 @@ async function uploadToS3(filePath: string, key: string) {
 }
 
 async function applyRetention(prefix: string) {
+  const bucket = env.aws.s3BackupBucket!;
+  const s3 = getS3();
   const res = await s3.send(
     new ListObjectsV2Command({
-      Bucket: BACKUP_BUCKET,
+      Bucket: bucket,
       Prefix: prefix,
     })
   );
@@ -94,7 +97,7 @@ async function applyRetention(prefix: string) {
   for (const f of oldFiles) {
     await s3.send(
       new DeleteObjectCommand({
-        Bucket: BACKUP_BUCKET,
+        Bucket: bucket,
         Key: f.Key!,
       })
     );
@@ -105,6 +108,10 @@ async function applyRetention(prefix: string) {
 /* ---------------- MAIN TASK ---------------- */
 
 export async function task() {
+  if (!isS3BackupConfigured()) {
+    console.warn('[folderBackup] Skipped — AWS S3 backup is not configured');
+    return;
+  }
 
   const date = formatTimestamp();
 
